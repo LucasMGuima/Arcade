@@ -22,6 +22,11 @@ PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
+class Colectable(arcade.Sprite):
+    def __init__(self, filename: str, value: int):
+        super().__init__(filename, COIN_SCALING)
+        self.value = value
+
 class MyGame(arcade.Window):
     """
         Main aplication class
@@ -100,10 +105,23 @@ class MyGame(arcade.Window):
 
         #Use a loop to place some coins to pick up
         for x in range(128, 1250, 256):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin = Colectable(":resources:images/items/coinGold.png", 1)
             coin.center_x = x
             coin.center_y = 96
-            self.scene.add_sprite("Coins", coin)
+            self.scene.add_sprite("Colectables", coin)
+
+        #Put some gems to pick up
+        coordinates_list = ([256, 288], [512, 288])
+
+        for coordinate in coordinates_list:
+            gem = Colectable(":resources:images/items/gemBlue.png", 5)
+            gem.position = coordinate
+            self.scene.add_sprite("Colectables", gem)
+
+        gem = Colectable(":resources:images/items/gemYellow.png", 10)
+        gem.center_x = 768
+        gem.center_y = 288
+        self.scene.add_sprite("Colectables", gem)
 
         #Put some creates on the ground
         #This place sprites using a list
@@ -175,16 +193,16 @@ class MyGame(arcade.Window):
         self.center_camera_on_player()
 
         #See if we hit any coin
-        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.scene['Coins'])
+        colectable_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.scene['Colectables'])
 
         #Loop through each coin (if any) and remove
-        for coin in coin_hit_list:
+        for colectable in colectable_hit_list:
             #Remove the coin
-            coin.remove_from_sprite_lists()
+            colectable.remove_from_sprite_lists()
             #Play sound
             arcade.play_sound(self.collet_coin_sound)
             #Update score
-            self.score += 1
+            self.score += colectable.value
 
     def on_draw(self):
         """
@@ -197,7 +215,7 @@ class MyGame(arcade.Window):
         self.camera.use()
 
         #Draw our scene
-        self.scene.draw(["Decor", "Coins", "Walls", "Player"])
+        self.scene.draw(["Decor", "Colectables", "Walls", "Player"])
 
         #Active the GUI camera before draw the GUI elements
         self.gui_camera.use()
