@@ -14,6 +14,7 @@ SCREEN_TITLE = "Platformer 0.1"
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
+COIN_SCALING = 0.5
 
 # Movement speed of the plater, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 5
@@ -41,6 +42,10 @@ class MyGame(arcade.Window):
 
         #A camera that can be used for scrolling the screen
         self.camera = None
+
+        #Load sounds
+        self.collet_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
         arcade.set_background_color(arcade.color.BLUE_YONDER)
 
@@ -80,6 +85,13 @@ class MyGame(arcade.Window):
             wall.center_x = x
             wall.center_y = 32
             self.scene.add_sprite("Walls", wall)
+
+        #Use a loop to place some coins to pick up
+        for x in range(128, 1250, 256):
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin.center_x = x
+            coin.center_y = 96
+            self.scene.add_sprite("Coins", coin)
 
         #Put some creates on the ground
         #This place sprites using a list
@@ -123,6 +135,7 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.left_pressed = True
             self.update_player_speed()
@@ -149,6 +162,16 @@ class MyGame(arcade.Window):
         #Position the camera
         self.center_camera_on_player()
 
+        #See if we hit any coin
+        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.scene['Coins'])
+
+        #Loop through each coin (if any) and remove
+        for coin in coin_hit_list:
+            #Remove the coin
+            coin.remove_from_sprite_lists()
+            #play sound
+            arcade.play_sound(self.collet_coin_sound)
+
     def on_draw(self):
         """
             Render the screen
@@ -160,7 +183,7 @@ class MyGame(arcade.Window):
         self.camera.use()
 
         #Draw our scene
-        self.scene.draw(["Decor", "Walls", "Player"])
+        self.scene.draw(["Decor", "Coins", "Walls", "Player"])
 
 def main():
     """Main Function"""
