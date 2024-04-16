@@ -43,6 +43,12 @@ class MyGame(arcade.Window):
         #A camera that can be used for scrolling the screen
         self.camera = None
 
+        #A camera that can be used to draw GUI elements
+        self.gui_camera = None
+
+        #Keep track of the socre
+        self.score = 0
+
         #Load sounds
         self.collet_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -58,6 +64,12 @@ class MyGame(arcade.Window):
 
         #Set up the camera
         self.camera = arcade.Camera(self.width, self.height)
+
+        #Set up the GUI camera
+        self.gui_camera = arcade.Camera(self.width, self.height)
+
+        #Keep track of the socre
+        self.score = 0
 
         #Create the Sprite lists
         self.scene.add_sprite_list("Decore")
@@ -169,8 +181,10 @@ class MyGame(arcade.Window):
         for coin in coin_hit_list:
             #Remove the coin
             coin.remove_from_sprite_lists()
-            #play sound
+            #Play sound
             arcade.play_sound(self.collet_coin_sound)
+            #Update score
+            self.score += 1
 
     def on_draw(self):
         """
@@ -184,6 +198,19 @@ class MyGame(arcade.Window):
 
         #Draw our scene
         self.scene.draw(["Decor", "Coins", "Walls", "Player"])
+
+        #Active the GUI camera before draw the GUI elements
+        self.gui_camera.use()
+
+        #Draw our socre on the screen, scrolling it with the viewport
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(
+            score_text,
+            10,
+            10,
+            arcade.csscolor.WHITE,
+            18
+        )
 
 def main():
     """Main Function"""
