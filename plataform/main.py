@@ -54,6 +54,9 @@ class MyGame(arcade.Window):
         #Keep track of the socre
         self.score = 0
 
+        #Our TileMap Object 
+        self.tile_map = None
+
         #Load sounds
         self.collet_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -64,29 +67,33 @@ class MyGame(arcade.Window):
         """
             Set up the game here. Call this function to restart the game.
         """
-        #Initialize Scene
-        self.scene = arcade.Scene()
-
         #Set up the camera
         self.camera = arcade.Camera(self.width, self.height)
 
         #Set up the GUI camera
         self.gui_camera = arcade.Camera(self.width, self.height)
 
+        #Name of the map file to load
+        map_name = ":resources:tiled_maps/map.json"
+
+        # Layer specific options are defined based on Layer names in a dictionary
+        # Doing this will make the SpriteList for the platforms layer
+        # use spatial hashing for detection.
+        layer_options = {
+            "Platforms":{
+                "use_spatial_hash": True,
+            },
+        }
+
+        #Read in the tile map
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        # Initialize Scene with our TileMap, this will automatically add all layers
+        # from the map as SpriteLists in the scene in the proper order
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
         #Keep track of the socre
         self.score = 0
-
-        #Create the Sprite lists
-        self.scene.add_sprite_list("Decore")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-        self.scene.add_sprite_list("Player")
-        
-        #Put some decoration in the ground
-        for x in range(0, 512, 54):
-            decor = arcade.Sprite(":resources:images/items/ladderTop.png", TILE_SCALING)
-            decor.center_x = x
-            decor.center_y = 96
-            self.scene.add_sprite("Decor", decor)
 
         #Set up the player, specificaly placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
@@ -95,46 +102,9 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        #Create the ground
-        #This place multiple sprites horizontale with a loop
-        for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassmid.png", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.scene.add_sprite("Walls", wall)
-
-        #Use a loop to place some coins to pick up
-        for x in range(128, 1250, 256):
-            coin = Colectable(":resources:images/items/coinGold.png", 1)
-            coin.center_x = x
-            coin.center_y = 96
-            self.scene.add_sprite("Colectables", coin)
-
-        #Put some gems to pick up
-        coordinates_list = ([256, 288], [512, 288])
-
-        for coordinate in coordinates_list:
-            gem = Colectable(":resources:images/items/gemBlue.png", 5)
-            gem.position = coordinate
-            self.scene.add_sprite("Colectables", gem)
-
-        gem = Colectable(":resources:images/items/gemYellow.png", 10)
-        gem.center_x = 768
-        gem.center_y = 288
-        self.scene.add_sprite("Colectables", gem)
-
-        #Put some creates on the ground
-        #This place sprites using a list
-        coordinates_list = ([512, 96], [256, 96], [768, 96])
-
-        for coordinate in coordinates_list:
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
-            wall.position = coordinate
-            self.scene.add_sprite("Walls", wall)
-
         #Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, walls=self.scene.get_sprite_list("Walls"), gravity_constant=GRAVITY
+            self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
         )
 
     def update_player_speed(self):
@@ -193,7 +163,7 @@ class MyGame(arcade.Window):
         self.center_camera_on_player()
 
         #See if we hit any coin
-        colectable_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.scene['Colectables'])
+        colectable_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.scene['Coins'])
 
         #Loop through each coin (if any) and remove
         for colectable in colectable_hit_list:
@@ -202,7 +172,7 @@ class MyGame(arcade.Window):
             #Play sound
             arcade.play_sound(self.collet_coin_sound)
             #Update score
-            self.score += colectable.value
+            self.score += 1
 
     def on_draw(self):
         """
@@ -215,7 +185,7 @@ class MyGame(arcade.Window):
         self.camera.use()
 
         #Draw our scene
-        self.scene.draw(["Decor", "Colectables", "Walls", "Player"])
+        self.scene.draw()
 
         #Active the GUI camera before draw the GUI elements
         self.gui_camera.use()
