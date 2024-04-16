@@ -35,6 +35,10 @@ class MyGame(arcade.Window):
         #Separete variable that holds the player sprite
         self.player_sprite = None
 
+        #Track the current state of what key is pressed
+        self.left_pressed = False
+        self.right_pressed = False
+
         arcade.set_background_color(arcade.color.BLUE_YONDER)
 
     def setup(self):
@@ -85,6 +89,16 @@ class MyGame(arcade.Window):
             self.player_sprite, walls=self.scene.get_sprite_list("Walls"), gravity_constant=GRAVITY
         )
 
+    def update_player_speed(self):
+        #Calculate speed based on key pressed
+        self.player_sprite.change_x = 0
+
+        if self.right_pressed and not self.left_pressed:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        elif self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        
+
     def on_key_press(self, key: int, modifiers: int):
         """Caled whenever a key is pressed."""
 
@@ -92,17 +106,21 @@ class MyGame(arcade.Window):
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+            self.left_pressed = True
+            self.update_player_speed()
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+            self.right_pressed = True
+            self.update_player_speed()
 
     def on_key_release(self, key: int, modifiers: int):
         """Caled when the user release a key"""
 
         if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
+            self.left_pressed = False
+            self.update_player_speed()
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+            self.right_pressed = False
+            self.update_player_speed()
 
     def on_update(self, delta_time: float):
         """Movement and game logic"""
