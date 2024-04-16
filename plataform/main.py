@@ -39,6 +39,9 @@ class MyGame(arcade.Window):
         self.left_pressed = False
         self.right_pressed = False
 
+        #A camera that can be used for scrolling the screen
+        self.camera = None
+
         arcade.set_background_color(arcade.color.BLUE_YONDER)
 
     def setup(self):
@@ -48,12 +51,15 @@ class MyGame(arcade.Window):
         #Initialize Scene
         self.scene = arcade.Scene()
 
+        #Set up the camera
+        self.camera = arcade.Camera(self.width, self.height)
+
         #Create the Sprite lists
         self.scene.add_sprite_list("Decore")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
         self.scene.add_sprite_list("Player")
         
-         #Put some decoration in the ground
+        #Put some decoration in the ground
         for x in range(0, 512, 54):
             decor = arcade.Sprite(":resources:images/items/ladderTop.png", TILE_SCALING)
             decor.center_x = x
@@ -98,6 +104,18 @@ class MyGame(arcade.Window):
         elif self.left_pressed and not self.right_pressed:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         
+    def center_camera_on_player(self):
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width/2)
+        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height/2)
+
+        #Dont't let camera travel past 0
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
 
     def on_key_press(self, key: int, modifiers: int):
         """Caled whenever a key is pressed."""
@@ -125,16 +143,22 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         """Movement and game logic"""
 
-        # Move player with the physics engine
+        #Move player with the physics engine
         self.physics_engine.update()
      
+        #Position the camera
+        self.center_camera_on_player()
+
     def on_draw(self):
         """
             Render the screen
         """
-    
+        #Clear the screen to the background color
         self.clear()
         
+        #Activate our camera
+        self.camera.use()
+
         #Draw our scene
         self.scene.draw(["Decor", "Walls", "Player"])
 
