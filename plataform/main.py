@@ -1,115 +1,166 @@
-"""
-    Platformer Game
-"""
-import arcade
-import arcade.color
-import arcade.csscolor
-import arcade.key
+import math
 import os
 
-#Cosntantes
+import arcade
+
+# Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Platformer 0.1"
+SCREEN_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
-CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
-COIN_SCALING = 0.5
+CHARACTER_SCALING = TILE_SCALING * 2
+COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
-# Movement speed of the plater, in pixels per frame
+# Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
 GRAVITY = 1.5
 PLAYER_JUMP_SPEED = 30
 
-#Plater starting position
-PLAYER_START_X = SPRITE_PIXEL_SIZE * TILE_SCALING * 2
-PLAYER_START_Y = SPRITE_PIXEL_SIZE * TILE_SCALING * 1
+# How many pixels to keep as a minimum margin between the character
+# and the edge of the screen.
+LEFT_VIEWPORT_MARGIN = 200
+RIGHT_VIEWPORT_MARGIN = 200
+BOTTOM_VIEWPORT_MARGIN = 150
+TOP_VIEWPORT_MARGIN = 100
+
+PLAYER_START_X = 2
+PLAYER_START_Y = 1
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
-#Layer names from our TileMap
 LAYER_NAME_MOVING_PLATFORMS = "Moving Platforms"
 LAYER_NAME_PLATFORMS = "Platforms"
 LAYER_NAME_COINS = "Coins"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_LADDERS = "Ladders"
 LAYER_NAME_PLAYER = "Player"
+LAYER_NAME_ENEMIES = "Enemies"
 
 
 def load_texture_pair(filename):
-    """Load a texture pair, with the second being a mirror image"""
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
     return [
         arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
+        arcade.load_texture(filename, flipped_horizontally=True),
     ]
 
-class Colectable(arcade.Sprite):
-    def __init__(self, filename: str, value: int):
-        super().__init__(filename, COIN_SCALING)
-        self.value = value
 
-class PlayerCharacter(arcade.Sprite):
-    """Player Sprite"""
-    def __init__(self):
-        #Set up parent class
+class Entity(arcade.Sprite):
+    def __init__(self, name_folder, name_file):
         super().__init__()
 
-        #Default to face-right
-        self.character_face_direction = RIGHT_FACING
+        # Default to facing right
+        self.facing_direction = RIGHT_FACING
 
-        #Used for flipping between image sequences
+        # Used for image sequences
         self.cur_texture = 0
         self.scale = CHARACTER_SCALING
 
-        #Trace our state
-        self.jumping = False
-        self.climbing = False
-        self.is_on_ladder = False
+        main_path = f":resources:images/animated_characters/{name_folder}/{name_file}"
 
-        # -- Load Textures --
-
-        # Images from Kenney.nl's Asset Pack 3
-        main_path = ":resources:images/animated_characters/male_person/malePerson"
-
-        #Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
         self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
         self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
 
-        #Load textures for walking
+        # Load textures for walking
         self.walk_textures = []
         for i in range(8):
             texture = load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
 
-        #Load textures for climbing
+        # Load textures for climbing
         self.climbing_textures = []
         texture = arcade.load_texture(f"{main_path}_climb0.png")
         self.climbing_textures.append(texture)
         texture = arcade.load_texture(f"{main_path}_climb1.png")
         self.climbing_textures.append(texture)
 
-        #Set the inicial texture
+        # Set the initial texture
         self.texture = self.idle_texture_pair[0]
 
         # Hit box will be set based on the first image used. If you want to specify
         # a different hit box, you can do it like the code below.
-        # set_hit_box = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
-        self.hit_box = self.texture.hit_box_points
+        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
+        self.set_hit_box(self.texture.hit_box_points)
 
-    def update_animation(self, delta_time: float = 1/60):
-        #Figure out if we need to flip face left or right
-        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
-            self.character_face_direction = LEFT_FACING
-        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
-            self.character_face_direction = RIGHT_FACING
 
-        #Climbing animation
+class Enemy(Entity):
+    def __init__(self, name_folder, name_file):
+
+        # Setup parent class
+        super().__init__(name_folder, name_file)
+
+        self.should_update_walk = 0
+
+    def update_animation(self, delta_time: float = 1 / 60):
+
+        # Figure out if we need to flip face left or right
+        if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
+            self.facing_direction = LEFT_FACING
+        elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
+            self.facing_direction = RIGHT_FACING
+
+        # Idle animation
+        if self.change_x == 0:
+            self.texture = self.idle_texture_pair[self.facing_direction]
+            return
+
+        # Walking animation
+        if self.should_update_walk == 3:
+            self.cur_texture += 1
+            if self.cur_texture > 7:
+                self.cur_texture = 0
+            self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
+            self.should_update_walk = 0
+            return
+
+        self.should_update_walk += 1
+
+
+class RobotEnemy(Enemy):
+    def __init__(self):
+
+        # Set up parent class
+        super().__init__("robot", "robot")
+
+
+class ZombieEnemy(Enemy):
+    def __init__(self):
+
+        # Set up parent class
+        super().__init__("zombie", "zombie")
+
+
+class PlayerCharacter(Entity):
+    """Player Sprite"""
+
+    def __init__(self):
+
+        # Set up parent class
+        super().__init__("male_person", "malePerson")
+
+        # Track our state
+        self.jumping = False
+        self.climbing = False
+        self.is_on_ladder = False
+
+    def update_animation(self, delta_time: float = 1 / 60):
+
+        # Figure out if we need to flip face left or right
+        if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
+            self.facing_direction = LEFT_FACING
+        elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
+            self.facing_direction = RIGHT_FACING
+
+        # Climbing animation
         if self.is_on_ladder:
             self.climbing = True
         if not self.is_on_ladder and self.climbing:
@@ -121,25 +172,26 @@ class PlayerCharacter(arcade.Sprite):
         if self.climbing:
             self.texture = self.climbing_textures[self.cur_texture // 4]
             return
-        
-        #Jumping animation
+
+        # Jumping animation
         if self.change_y > 0 and not self.is_on_ladder:
-            self.texture = self.jump_texture_pair[self.character_face_direction]
+            self.texture = self.jump_texture_pair[self.facing_direction]
             return
-        if self.change_y < 0 and not self.is_on_ladder:
-            self.texture = self.fall_texture_pair[self.character_face_direction]
+        elif self.change_y < 0 and not self.is_on_ladder:
+            self.texture = self.fall_texture_pair[self.facing_direction]
             return
-        
-        #Idel animation
+
+        # Idle animation
         if self.change_x == 0:
-            self.texture = self.idle_texture_pair[self.character_face_direction]
+            self.texture = self.idle_texture_pair[self.facing_direction]
             return
-        
-        #Walk animation
+
+        # Walking animation
         self.cur_texture += 1
         if self.cur_texture > 7:
             self.cur_texture = 0
-        self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+        self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
+
 
 class MyGame(arcade.Window):
     """
@@ -231,12 +283,42 @@ class MyGame(arcade.Window):
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
-        self.player_sprite.center_x = PLAYER_START_X
-        self.player_sprite.center_y = PLAYER_START_Y
+        self.player_sprite.center_x = (
+            self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
+        )
+        self.player_sprite.center_y = (
+            self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
+        )
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Calculate the right edge of the my_map in pixels
         self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
+
+        # -- Enemies
+        enemies_layer = self.tile_map.object_lists[LAYER_NAME_ENEMIES]
+
+        for my_object in enemies_layer:
+            cartesian = self.tile_map.get_cartesian(
+                my_object.shape[0], my_object.shape[1]
+            )
+            enemy_type = my_object.properties["type"]
+            if enemy_type == "robot":
+                enemy = RobotEnemy()
+            elif enemy_type == "zombie":
+                enemy = ZombieEnemy()
+            enemy.center_x = math.floor(
+                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
+            )
+            enemy.center_y = math.floor(
+                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
+            )
+            if "boundary_left" in my_object.properties:
+                enemy.boundary_left = my_object.properties["boundary_left"]
+            if "boundary_right" in my_object.properties:
+                enemy.boundary_right = my_object.properties["boundary_right"]
+            if "change_x" in my_object.properties:
+                enemy.change_x = my_object.properties["change_x"]
+            self.scene.add_sprite(LAYER_NAME_ENEMIES, enemy)
 
         # --- Other stuff
         # Set the background color
@@ -380,11 +462,33 @@ class MyGame(arcade.Window):
 
         # Update Animations
         self.scene.update_animation(
-            delta_time, [LAYER_NAME_COINS, LAYER_NAME_BACKGROUND, LAYER_NAME_PLAYER]
+            delta_time,
+            [
+                LAYER_NAME_COINS,
+                LAYER_NAME_BACKGROUND,
+                LAYER_NAME_PLAYER,
+                LAYER_NAME_ENEMIES,
+            ],
         )
 
-        # Update walls, used with moving platforms
-        self.scene.update([LAYER_NAME_MOVING_PLATFORMS])
+        # Update moving platforms and enemies
+        self.scene.update([LAYER_NAME_MOVING_PLATFORMS, LAYER_NAME_ENEMIES])
+
+        # See if the enemy hit a boundary and needs to reverse direction.
+        for enemy in self.scene[LAYER_NAME_ENEMIES]:
+            if (
+                enemy.boundary_right
+                and enemy.right > enemy.boundary_right
+                and enemy.change_x > 0
+            ):
+                enemy.change_x *= -1
+
+            if (
+                enemy.boundary_left
+                and enemy.left < enemy.boundary_left
+                and enemy.change_x < 0
+            ):
+                enemy.change_x *= -1
 
         # See if we hit any coins
         coin_hit_list = arcade.check_for_collision_with_list(
@@ -407,11 +511,14 @@ class MyGame(arcade.Window):
 
         # Position the camera
         self.center_camera_to_player()
+
+
 def main():
-    """Main Function"""
+    """Main function"""
     window = MyGame()
     window.setup()
-    window.run()
+    arcade.run()
+
 
 if __name__ == "__main__":
     main()
