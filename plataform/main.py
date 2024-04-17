@@ -490,24 +490,37 @@ class MyGame(arcade.Window):
             ):
                 enemy.change_x *= -1
 
-        # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene[LAYER_NAME_COINS]
+        player_colision_list = arcade.check_for_collision_with_lists(
+            self.player_sprite,
+            [
+                self.scene[LAYER_NAME_COINS],
+                self.scene[LAYER_NAME_ENEMIES]
+            ],
         )
 
+        # See if we hit any coins
+        #coin_hit_list = arcade.check_for_collision_with_list(
+        #    self.player_sprite, self.scene[LAYER_NAME_COINS]
+        #)
+
         # Loop through each coin we hit (if any) and remove it
-        for coin in coin_hit_list:
+        for collision in player_colision_list:
 
-            # Figure out how many points this coin is worth
-            if "Points" not in coin.properties:
-                print("Warning, collected a coin without a Points property.")
+            if self.scene[LAYER_NAME_ENEMIES] in collision.sprite_lists:
+                arcade.play_sound(self.game_over)
+                self.setup()
+                return
             else:
-                points = int(coin.properties["Points"])
-                self.score += points
-
-            # Remove the coin
-            coin.remove_from_sprite_lists()
-            arcade.play_sound(self.collect_coin_sound)
+                # Figure out how many points this coin is worth
+                if "Points" not in collision.properties:
+                    print("Warning, collected a coin without a Points property.")
+                else:
+                    points = int(collision.properties["Points"])
+                    self.score += points
+                
+                #Remove the coin
+                collision.remove_from_sprite_lists()
+                arcade.play_sound(self.collect_coin_sound)
 
         # Position the camera
         self.center_camera_to_player()
