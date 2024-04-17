@@ -34,6 +34,8 @@ LAYER_NAME_COINS = "Coins"
 LAYER_NAME_FOREGROUND = "Foreground"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
+LAYER_NAME_MOVING_PLATFORMS = "Moving Platforms"
+LAYER_NAME_LADDERS = "Ladders"
 
 class Colectable(arcade.Sprite):
     def __init__(self, filename: str, value: int):
@@ -97,7 +99,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         #Name of the map file to load
-        map_name = f":resources:tiled_maps/map2_level_{self.level}.json"
+        map_name = f":resources:tiled_maps/map_with_ladders.json"
 
         # Layer specific options are defined based on Layer names in a dictionary
         # Doing this will make the SpriteList for the platforms layer
@@ -106,10 +108,13 @@ class MyGame(arcade.Window):
             LAYER_NAME_PLATFORMS:{
                 "use_spatial_hash": True,
             },
-            LAYER_NAME_COINS:{
+            LAYER_NAME_MOVING_PLATFORMS: {
+                "use_spatial_hash": False,
+            },
+            LAYER_NAME_LADDERS: {
                 "use_spatial_hash": True,
             },
-            LAYER_NAME_DONT_TOUCH:{
+            LAYER_NAME_COINS: {
                 "use_spatial_hash": True,
             },
         }
@@ -131,7 +136,7 @@ class MyGame(arcade.Window):
         # Setting before using scene.add_sprite allows us to define where the SpriteList
         # will be in the draw order. If we just use add_sprite, it will be appended to the
         # end of the order.
-        self.scene.add_sprite_list_after("Player", LAYER_NAME_FOREGROUND)
+        # self.scene.add_sprite_list_after("Player", LAYER_NAME_FOREGROUND)
 
         #Set up the player, specificaly placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
@@ -142,7 +147,11 @@ class MyGame(arcade.Window):
 
         #Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, walls=self.scene["Platforms"], gravity_constant=GRAVITY
+            self.player_sprite, 
+            platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
+            ladders=self.scene[LAYER_NAME_LADDERS],
+            walls=self.scene[LAYER_NAME_PLATFORMS], 
+            gravity_constant=GRAVITY
         )
 
         #Calculate the right edge of the my_map in pixels
@@ -223,7 +232,7 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.game_over)
         
         #Did the player touch something they should not?
-        if arcade.check_for_collision_with_list(
+        """if arcade.check_for_collision_with_list(
             self.player_sprite, self.scene[LAYER_NAME_DONT_TOUCH]
         ):
             self.player_sprite.change_x = 0
@@ -231,7 +240,7 @@ class MyGame(arcade.Window):
             self.player_sprite.center_x = PLAYER_START_X
             self.player_sprite.center_y = PLAYER_START_Y
 
-            arcade.play_sound(self.game_over)
+            arcade.play_sound(self.game_over)"""
 
         #Se if the player got to the end of level
         if self.player_sprite.center_x >= self.end_of_map:
