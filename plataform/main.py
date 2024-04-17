@@ -15,6 +15,12 @@ COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
+#Shotting Constants
+SPRITE_SCALING_LASER = 0.8
+SHOOT_SPEED = 15
+BULLET_SPEED = 12
+BULLET_DAMAGE = 25
+
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
 GRAVITY = 1.5
@@ -41,6 +47,7 @@ LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_LADDERS = "Ladders"
 LAYER_NAME_PLAYER = "Player"
 LAYER_NAME_ENEMIES = "Enemies"
+LAYER_NAME_BULLETS = "Bullets"
 
 
 def load_texture_pair(filename):
@@ -99,6 +106,7 @@ class Enemy(Entity):
         super().__init__(name_folder, name_file)
 
         self.should_update_walk = 0
+        self.health = 0
 
     def update_animation(self, delta_time: float = 1 / 60):
 
@@ -131,12 +139,16 @@ class RobotEnemy(Enemy):
         # Set up parent class
         super().__init__("robot", "robot")
 
+        self.health = 100
+
 
 class ZombieEnemy(Enemy):
     def __init__(self):
 
         # Set up parent class
         super().__init__("zombie", "zombie")
+
+        self.health = 50
 
 
 class PlayerCharacter(Entity):
@@ -216,6 +228,7 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
         self.jump_needs_reset = False
+        self.shoot_pressed = False
 
         # Our TileMap Object
         self.tile_map = None
@@ -240,10 +253,16 @@ class MyGame(arcade.Window):
         # Keep track of the score
         self.score = 0
 
+        #Shooting mechanics
+        self.can_shoot = False
+        self.shoot_timer = 0
+
         # Load sounds
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
         self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
+        self.shoot_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+        self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -280,6 +299,10 @@ class MyGame(arcade.Window):
 
         # Keep track of the score
         self.score = 0
+
+        #Shooting mechanics
+        self.can_shoot = True
+        self.shoot_timer = 0
 
         # Set up the player, specifically placing it at these coordinates.
         self.player_sprite = PlayerCharacter()
@@ -319,6 +342,9 @@ class MyGame(arcade.Window):
             if "change_x" in my_object.properties:
                 enemy.change_x = my_object.properties["change_x"]
             self.scene.add_sprite(LAYER_NAME_ENEMIES, enemy)
+
+        #Add bullet spritelist to Scene
+        self.scene.add_sprite_list(LAYER_NAME_BULLETS)
 
         # --- Other stuff
         # Set the background color
@@ -411,6 +437,9 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = True
 
+        if key == arcade.key.Q:
+            self.shoot_pressed = True
+
         self.process_keychange()
 
     def on_key_release(self, key, modifiers):
@@ -426,6 +455,9 @@ class MyGame(arcade.Window):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
 
+        if key == arcade.key.Q:
+            self.shoot_pressed = False
+        
         self.process_keychange()
 
     def center_camera_to_player(self):
@@ -460,6 +492,32 @@ class MyGame(arcade.Window):
             self.player_sprite.is_on_ladder = False
             self.process_keychange()
 
+        if self.can_shoot:
+            if self.shoot_pressed:
+                arcade.play_sound(self.shoot_sound)
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserBlue01.png",
+                    SPRITE_SCALING_LASER,
+                )
+
+                if self.player_sprite.facing_direction == RIGHT_FACING:
+                    bullet.change_x = BULLET_SPEED
+                else:
+                    bullet.change_x = -BULLET_SPEED
+
+                bullet.center_x = self.player_sprite.center_x
+                bullet.center_y = self.player_sprite.center_y
+
+                self.scene.add_sprite(LAYER_NAME_BULLETS, bullet)
+
+                self.can_shoot = False
+        else:
+            self.shoot_timer += 1
+            if self.shoot_timer == SHOOT_SPEED:
+                self.can_shoot = True
+                self.shoot_timer = 0
+
+
         # Update Animations
         self.scene.update_animation(
             delta_time,
@@ -471,8 +529,10 @@ class MyGame(arcade.Window):
             ],
         )
 
-        # Update moving platforms and enemies
-        self.scene.update([LAYER_NAME_MOVING_PLATFORMS, LAYER_NAME_ENEMIES])
+        # Update moving platforms, enemies, bullets
+        self.scene.update(
+            [LAYER_NAME_MOVING_PLATFORMS, LAYER_NAME_ENEMIES, LAYER_NAME_BULLETS]
+        )
 
         # See if the enemy hit a boundary and needs to reverse direction.
         for enemy in self.scene[LAYER_NAME_ENEMIES]:
@@ -489,6 +549,40 @@ class MyGame(arcade.Window):
                 and enemy.change_x < 0
             ):
                 enemy.change_x *= -1
+
+            #Se if the bullet hit something
+            for bullet in self.scene[LAYER_NAME_BULLETS]:
+                hit_list = arcade.check_for_collision_with_lists(
+                    bullet,
+                    [
+                        self.scene[LAYER_NAME_ENEMIES],
+                        self.scene[LAYER_NAME_PLATFORMS],
+                        self.scene[LAYER_NAME_MOVING_PLATFORMS]
+                    ],
+                )
+
+                if hit_list:
+                    bullet.remove_from_sprite_lists()
+
+                    for collision in hit_list:
+                        if(
+                            self.scene[LAYER_NAME_ENEMIES]
+                            in collision.sprite_lists
+                        ):
+                            #The collision was with an enemy
+                            collision.health -= BULLET_DAMAGE
+
+                            if collision.health <= 0:
+                                collision.remove_from_sprite_lists()
+                                self.score += 100
+                            
+                            #Hit sound
+                            arcade.play_sound(self.hit_sound)
+                    return
+                
+                if(bullet.right < 0 or 
+                   bullet.left > ((self.tile_map.width * self.tile_map.tile_width) * TILE_SCALING)
+                ): bullet.remove_from_sprite_lists()
 
         player_colision_list = arcade.check_for_collision_with_lists(
             self.player_sprite,
