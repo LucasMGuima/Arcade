@@ -205,7 +205,31 @@ class PlayerCharacter(Entity):
         self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
 
 
-class MyGame(arcade.Window):
+class MainMenu(arcade.View):
+    """Class that manages the 'menu' view."""
+
+    def on_show_view(self):
+        """Called when switching to this view."""
+        arcade.set_background_color(arcade.color.WHITE)
+
+    def on_draw(self):
+        """Draw the menu"""
+        self.clear()
+        arcade.draw_text(
+            "Main Menu - Click to play",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=30,
+            anchor_x="center",
+        )
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """Use a mouse press to advance to the 'game' view."""
+        game_view = GameView()
+        self.window.show_view(game_view)
+
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -216,7 +240,7 @@ class MyGame(arcade.Window):
         """
 
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Set the path to start with this program
         file_path = os.path.dirname(os.path.abspath(__file__))
@@ -268,8 +292,8 @@ class MyGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
 
         # Set up the Cameras
-        self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        self.camera = arcade.Camera(self.window.width, self.window.height)
+        self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         # Map name
         map_name = ":resources:tiled_maps/map_with_ladders.json"
@@ -359,6 +383,9 @@ class MyGame(arcade.Window):
             ladders=self.scene[LAYER_NAME_LADDERS],
             walls=self.scene[LAYER_NAME_PLATFORMS]
         )
+
+    def on_show_view(self):
+        self.setup()
 
     def on_draw(self):
         """Render the screen."""
@@ -602,7 +629,8 @@ class MyGame(arcade.Window):
 
             if self.scene[LAYER_NAME_ENEMIES] in collision.sprite_lists:
                 arcade.play_sound(self.game_over)
-                self.setup()
+                game_over = GameOverView()
+                self.window.show_view(game_over)
                 return
             else:
                 # Figure out how many points this coin is worth
@@ -619,11 +647,35 @@ class MyGame(arcade.Window):
         # Position the camera
         self.center_camera_to_player()
 
+class GameOverView(arcade.View):
+    """Class to manage the game overview"""
+
+    def on_show_view(self):
+        """Called when switching to this view"""
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_draw(self):
+        """Draw the game overview"""
+        self.clear()
+        arcade.draw_text(
+            "Game Over - Click to restart",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            arcade.color.WHITE,
+            30,
+            anchor_x="center",
+        )
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """Use a mouse press to advance to the 'game' view."""
+        game_view = GameView()
+        self.window.show_view(game_view)
 
 def main():
     """Main function"""
-    window = MyGame()
-    window.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    menu_view = MainMenu()
+    window.show_view(menu_view)
     arcade.run()
 
 
