@@ -68,26 +68,29 @@ PLAYER_MASS = 2.0
 PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
 
+# Force applied while on the ground
+PLAYER_MOVE_FORCE_ON_GROUND = 8000
+
 class GameWindow(arcade.Window):
     """Main Window"""
-    def __ini__(self, width, height, title):
+    def __init__(self, width, height, title):
         """Create the variavbles"""
 
         # Init the parent class
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_srpite = Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[arcade.Sprite] = None
 
         # Sprite lists we need
-        self.player_list = Optional[arcade.SpriteList] = None
-        self.wall_list = Optional[arcade.SpriteList] = None
-        self.bullet_list = Optional[arcade.SpriteList] = None
-        self.item_list = Optional[arcade.SpriteList] = None
+        self.player_list: Optional[arcade.SpriteList] = None
+        self.wall_list: Optional[arcade.SpriteList] = None
+        self.bullet_list: Optional[arcade.SpriteList] = None
+        self.item_list: Optional[arcade.SpriteList] = None
 
         # Check the current state of what key is pressed
-        self.left_pressed : bool = False
-        self.right_pressed : bool = False
+        self.left_pressed: bool = False
+        self.right_pressed: bool = False
 
         # Physics engine
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
@@ -113,16 +116,16 @@ class GameWindow(arcade.Window):
         self.item_list = tile_map.sprite_lists["Dynamic Items"]
 
         # Create player sprite
-        self.player_srpite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
 
         # Set player location
         grid_x = 1
         grid_y = 1
-        self.player_srpite.center_x = SPRITE_SIZE * grid_x + SPRITE_SIZE / 2
-        self.player_srpite.center_y = SPRITE_SIZE * grid_y + SPRITE_SIZE / 2
+        self.player_sprite.center_x = SPRITE_SIZE * grid_x + SPRITE_SIZE / 2
+        self.player_sprite.center_y = SPRITE_SIZE * grid_y + SPRITE_SIZE / 2
 
         # Add player to sprite list
-        self.player_list.append(self.player_srpite)
+        self.player_list.append(self.player_sprite)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -151,7 +154,7 @@ class GameWindow(arcade.Window):
         # Friction is between two objects in contact. It is important to remember
         # in top-down games that friction moving along the 'floor' is controlled
         # by damping.
-        self.physics_engine.add_sprite(self.player_srpite,
+        self.physics_engine.add_sprite(self.player_sprite,
                                        friction=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
                                        moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
@@ -178,14 +181,39 @@ class GameWindow(arcade.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ Called whenever a key is pressed. """
-        pass
+        if symbol == arcade.key.LEFT:
+            self.left_pressed = True
+        elif symbol == arcade.key.RIGHT:
+            self.right_pressed = True
 
     def on_key_release(self, symbol: int, modifiers: int):
         """ Called whenever a key is released. """
-        pass
+        if symbol == arcade.key.LEFT:
+            self.left_pressed = False
+        elif symbol == arcade.key.RIGHT:
+            self.right_pressed = False
+
 
     def on_update(self, delta_time: float):
         """ Movement and game logic """
+
+        # Update player forces based on keys pressed
+        if self.left_pressed and not self.right_pressed:
+            # Create a force to the left. Apply it.
+            force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+            # Set friction to zero for the player while moving
+            self.physics_engine.set_friction(self.player_sprite, 0)
+        elif self.right_pressed and not self.left_pressed:
+            # Create a force to the right. Apply it.
+            force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+            # Set friction to zero for the player while moving
+            self.physics_engine.set_friction(self.player_sprite, 0)
+        else:
+            # Player's feet are not moving. Therefore up the friction so we stop
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
+
         self.physics_engine.step()
 
     def on_draw(self):
