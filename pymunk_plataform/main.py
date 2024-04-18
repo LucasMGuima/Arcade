@@ -47,6 +47,27 @@ SCREEN_GRID_HEIGHT = 15
 SCREEN_WIDTH = SPRITE_SIZE * SCREEN_GRID_WIDTH
 SCREEN_HEIGHT = SPRITE_SIZE * SCREEN_GRID_HEIGHT
 
+# --- Physics forces. Higher number, faster accelerating.
+
+# Gravity
+GRAVITY = 1500
+
+# Damping - Amount of speed lost per second
+DEFAULT_DAMPING = 1.0
+PLAYER_DAMPING = 0.4
+
+# Friction between objects
+PLAYER_FRICTION = 1.0
+WALL_FRICTION = 0.7
+DYNAMIC_ITEM_FRICTION = 0.6
+
+# Mass (defaults to 1)
+PLAYER_MASS = 2.0
+
+# Keep player from going to fast
+PLAYER_MAX_HORIZONTAL_SPEED = 450
+PLAYER_MAX_VERTICAL_SPEED = 1600
+
 class GameWindow(arcade.Window):
     """Main Window"""
     def __ini__(self, width, height, title):
@@ -67,6 +88,9 @@ class GameWindow(arcade.Window):
         # Check the current state of what key is pressed
         self.left_pressed : bool = False
         self.right_pressed : bool = False
+
+        # Physics engine
+        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
         # Set background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -100,6 +124,58 @@ class GameWindow(arcade.Window):
         # Add player to sprite list
         self.player_list.append(self.player_srpite)
 
+        # --- Pymunk Physics Engine Setup ---
+
+        # The default damping for every object controls the percent of velocity
+        # the object will keep each second. A value of 1.0 is no speed loss,
+        # 0.9 is 10% per second, 0.1 is 90% per second.
+        # For top-down games, this is basically the friction for moving objects.
+        # For platformers with gravity, this should probably be set to 1.0.
+        # Default value is 1.0 if not specified.
+        damping = DEFAULT_DAMPING
+
+        # Set the gravity. (0, 0) is good for outer space and top-down.
+        gravity = (0, -GRAVITY)
+
+        # Create the physics engine
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
+                                                         gravity=gravity)
+
+        # Add the player.
+        # For the player, we set the damping to a lower value, which increases
+        # the damping rate. This prevents the character from traveling too far
+        # after the player lets off the movement keys.
+        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # rotating.
+        # Friction normally goes between 0 (no friction) and 1.0 (high friction)
+        # Friction is between two objects in contact. It is important to remember
+        # in top-down games that friction moving along the 'floor' is controlled
+        # by damping.
+        self.physics_engine.add_sprite(self.player_srpite,
+                                       friction=PLAYER_FRICTION,
+                                       mass=PLAYER_MASS,
+                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                       collision_type="player",
+                                       max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
+                                       max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)
+
+        # Create the walls.
+        # By setting the body type to PymunkPhysicsEngine.STATIC the walls can't
+        # move.
+        # Movable objects that respond to forces are PymunkPhysicsEngine.DYNAMIC
+        # PymunkPhysicsEngine.KINEMATIC objects will move, but are assumed to be
+        # repositioned by code and don't respond to physics forces.
+        # Dynamic is default.
+        self.physics_engine.add_sprite_list(self.wall_list,
+                                            friction=WALL_FRICTION,
+                                            collision_type="wall",
+                                            body_type=arcade.PymunkPhysicsEngine.STATIC)
+
+        # Create the items
+        self.physics_engine.add_sprite_list(self.item_list,
+                                            friction=DYNAMIC_ITEM_FRICTION,
+                                            collision_type="item")
+
     def on_key_press(self, symbol: int, modifiers: int):
         """ Called whenever a key is pressed. """
         pass
@@ -110,7 +186,7 @@ class GameWindow(arcade.Window):
 
     def on_update(self, delta_time: float):
         """ Movement and game logic """
-        pass
+        self.physics_engine.step()
 
     def on_draw(self):
         """ Draw everting """
