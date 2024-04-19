@@ -19,6 +19,11 @@
 # make sure the hit box for the bottom of the player sprite is rounded. 
 # Also, look into the possibility of merging horizontal rows of sprites.
 
+# Because the physics engine works with small floating point numbers, 
+# it often flips above and below zero by small amounts. It is a good idea not to change 
+# the animation as the x and y float around zero. For that reason, 
+# in this code we have a “dead zone.” We don’t change the animation until it gets outside of that zone.
+
 """"
     Example of Pymunk Physiscs Engine Plataformer
 """
@@ -46,6 +51,16 @@ SCREEN_GRID_HEIGHT = 15
 # Size of screen to show, in pixels
 SCREEN_WIDTH = SPRITE_SIZE * SCREEN_GRID_WIDTH
 SCREEN_HEIGHT = SPRITE_SIZE * SCREEN_GRID_HEIGHT
+
+# Close enough to not-moving to have to change the animation to idle
+DEAD_ZONE = 0.1
+
+# Constants used to treck if the player is facing left or right
+RIGHT_FACING = 0
+LEFT_FACING = 1
+
+# How many pixels to move before we change the texture in the wlaking animation
+DISTANCE_TO_CHANGE_TEXTURE = 20
 
 # --- Physics forces. Higher number, faster accelerating.
 
@@ -76,6 +91,83 @@ PLAYER_MOVE_FORCE_ON_AIR = 900
 # Strenght of jump
 PLAYER_JUMP_IMPULSE = 2000
 
+class PlayerSprite(arcade.Sprite):
+    """Player Sprite"""
+    def __init__(self):
+        """ Init """
+        super().__init__()
+        
+        # Set out scale
+        self.scale = SPRITE_SCALING_PLAYER
+
+        main_path = ":resources:images/animated_characters/female_person/femalePerson"
+
+        # Load texture for idle standing
+        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
+        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
+        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
+
+        # Load texture for walking
+        self.walk_textures = []
+        for i in range(8):
+            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
+            self.walk_textures.append(texture)
+
+        # Set the initial texture
+        self.texture = self.idle_texture_pair[0]
+
+        # Hit box will be set based on the first image used
+        self.hit_box = self.texture.hit_box_points
+
+        # Default face right
+        self.character_face_direction = RIGHT_FACING
+
+        # Index of our current texture
+        self.cur_texture = 0
+
+        # How far have we traveled horizontally since changing the texture
+        self.x_odometer = 0
+
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        """ Handle being moved by the pymunk engine """
+        # Figure out if we need to face left or right
+        if dx < -DEAD_ZONE and self.character_face_direction == RIGHT_FACING:
+            self.character_face_direction = LEFT_FACING
+        elif dx > DEAD_ZONE and self.character_face_direction == LEFT_FACING:
+            self.character_face_direction = RIGHT_FACING
+
+        # Are we on the ground?
+        is_on_ground = physics_engine.is_on_ground(self)
+
+        # Add to the odometer how far we have moved
+        self.x_odometer += dx
+
+        # Jumping animation
+        if not is_on_ground:
+            if dy > DEAD_ZONE:
+                self.texture = self.jump_texture_pair[self.character_face_direction]
+                return
+            elif dy < -DEAD_ZONE:
+                self.texture = self.fall_texture_pair[self.character_face_direction]
+                return
+            
+        # Idle animation
+        if abs(dx) <= DEAD_ZONE:
+            self.texture = self.idle_texture_pair[self.character_face_direction]
+            return
+        
+        # Have we moved far enought to change texture?
+        if abs(self.x_odometer) > DISTANCE_TO_CHANGE_TEXTURE:
+            # Reset the odometer
+            self.x_odometer = 0
+
+            # Advance the walking animation
+            self.cur_texture += 1
+            if self.cur_texture > 7:
+                self.cur_texture = 0
+            self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+        
+
 class GameWindow(arcade.Window):
     """Main Window"""
     def __init__(self, width, height, title):
@@ -85,7 +177,7 @@ class GameWindow(arcade.Window):
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[PlayerSprite] = None
 
         # Sprite lists we need
         self.player_list: Optional[arcade.SpriteList] = None
@@ -121,7 +213,7 @@ class GameWindow(arcade.Window):
         self.item_list = tile_map.sprite_lists["Dynamic Items"]
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = PlayerSprite()
 
         # Set player location
         grid_x = 1
