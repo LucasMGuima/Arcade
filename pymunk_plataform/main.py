@@ -33,8 +33,8 @@ SCREEN_TITLE = "PyMunk Plataformer"
 SPRITE_IMAGE_SIZE = 128
 
 # Scale sprites up or down
-SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_TILE = 0.5
+SPRITE_SCALING_PLAYER = 0.25
+SPRITE_SCALING_TILE = 0.25
 
 # Scaled sprite size for tiles
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
@@ -50,7 +50,7 @@ SCREEN_HEIGHT = SPRITE_SIZE * SCREEN_GRID_HEIGHT
 # --- Physics forces. Higher number, faster accelerating.
 
 # Gravity
-GRAVITY = 1500
+GRAVITY = 750
 
 # Damping - Amount of speed lost per second
 DEFAULT_DAMPING = 1.0
@@ -65,11 +65,16 @@ DYNAMIC_ITEM_FRICTION = 0.6
 PLAYER_MASS = 2.0
 
 # Keep player from going to fast
-PLAYER_MAX_HORIZONTAL_SPEED = 450
-PLAYER_MAX_VERTICAL_SPEED = 1600
+PLAYER_MAX_HORIZONTAL_SPEED = 225
+PLAYER_MAX_VERTICAL_SPEED = 800
 
 # Force applied while on the ground
 PLAYER_MOVE_FORCE_ON_GROUND = 8000
+# Force applied when moving left/right in the ar
+PLAYER_MOVE_FORCE_ON_AIR = 900
+
+# Strenght of jump
+PLAYER_JUMP_IMPULSE = 2000
 
 class GameWindow(arcade.Window):
     """Main Window"""
@@ -185,6 +190,12 @@ class GameWindow(arcade.Window):
             self.left_pressed = True
         elif symbol == arcade.key.RIGHT:
             self.right_pressed = True
+        elif symbol == arcade.key.UP:
+            # find if player is standing on ground
+            if self.physics_engine.is_on_ground(self.player_sprite):
+                # She is, go ahead and jump
+                impulse = (0, PLAYER_JUMP_IMPULSE)
+                self.physics_engine.apply_impulse(self.player_sprite, impulse)
 
     def on_key_release(self, symbol: int, modifiers: int):
         """ Called whenever a key is released. """
@@ -197,16 +208,24 @@ class GameWindow(arcade.Window):
     def on_update(self, delta_time: float):
         """ Movement and game logic """
 
+        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
+
         # Update player forces based on keys pressed
         if self.left_pressed and not self.right_pressed:
             # Create a force to the left. Apply it.
-            force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            if is_on_ground:
+                force = (-PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (-PLAYER_MOVE_FORCE_ON_AIR, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
             # Set friction to zero for the player while moving
             self.physics_engine.set_friction(self.player_sprite, 0)
         elif self.right_pressed and not self.left_pressed:
             # Create a force to the right. Apply it.
-            force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            if is_on_ground:
+                force = (PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (PLAYER_MOVE_FORCE_ON_AIR, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
             # Set friction to zero for the player while moving
             self.physics_engine.set_friction(self.player_sprite, 0)
