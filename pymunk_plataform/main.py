@@ -91,6 +91,19 @@ PLAYER_MOVE_FORCE_ON_AIR = 900
 # Strenght of jump
 PLAYER_JUMP_IMPULSE = 2000
 
+# If we use the same gravity for the bullet as everything else, 
+# it tends to drop too fast. We could set this to zero if we 
+# wanted it to not drop at all.
+
+# How much force to put on the bullet
+BULLET_MOVE_FORCE = 4500
+
+# Mass of the bullet
+BULLET_MASS = 0.1
+
+# Make bullet less affected by gravity
+BULLET_GRAVITY = 300
+
 class PlayerSprite(arcade.Sprite):
     """Player Sprite"""
     def __init__(self):
@@ -275,6 +288,60 @@ class GameWindow(arcade.Window):
         self.physics_engine.add_sprite_list(self.item_list,
                                             friction=DYNAMIC_ITEM_FRICTION,
                                             collision_type="item")
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        """ Called whenever the mouse button is clicked """
+
+        bullet = arcade.SpriteSolidColor(20, 5, arcade.color.DARK_YELLOW)
+        self.bullet_list.append(bullet)
+
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.position = self.player_sprite.position
+
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrooling screen, you will also need
+        # to add in self.view_botton and self.view_left
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+
+        # What is the 1/2 size of the sprite, so we can figure out how far
+        # away to spawn the bullet.
+        size = max(self.player_sprite.width, self.player_sprite.height)/2
+
+        # Use angel to spawn the bullet away from player in proper direction
+        bullet.center_x += size * math.cos(angle)
+        bullet.center_y += size * math.sin(angle)
+
+        # Set angle of the bullet
+        bullet.angle = math.degrees(angle)
+
+        # Gravity to use for the bullet
+        # If we don't use custom gravity, bullet drops too fast, or we have
+        # to make it go too fast.
+        # Force is in relation to bullet's angle.
+        bullet_gravity = (0, -BULLET_GRAVITY)
+
+        # Add the sprite. This needs to be done AFTER setting the fields above.
+        self.physics_engine.add_sprite(bullet,
+                                       mass=BULLET_MASS,
+                                       damping=1.0,
+                                       friction=0.6,
+                                       collision_type="bullet",
+                                       gravity=bullet_gravity,
+                                       elasticity=0.9)
+
+        # Add force to bullet
+        force = (BULLET_MOVE_FORCE, 0)
+        self.physics_engine.apply_force(bullet, force)
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ Called whenever a key is pressed. """
