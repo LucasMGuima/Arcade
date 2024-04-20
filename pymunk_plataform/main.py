@@ -179,7 +179,14 @@ class PlayerSprite(arcade.Sprite):
             if self.cur_texture > 7:
                 self.cur_texture = 0
             self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
-        
+
+class BulletSprite(arcade.SpriteSolidColor):
+    """ Bullet Sprite """
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        """ Handle when the sprite is moved by the physics engine. """
+        # If the bullet falls below the screen. remove it
+        if self.center_y < -100:
+            self.remove_from_sprite_lists()        
 
 class GameWindow(arcade.Window):
     """Main Window"""
@@ -197,6 +204,7 @@ class GameWindow(arcade.Window):
         self.wall_list: Optional[arcade.SpriteList] = None
         self.bullet_list: Optional[arcade.SpriteList] = None
         self.item_list: Optional[arcade.SpriteList] = None
+        self.moving_sprites_list: Optional[arcade.Sprite] = None
 
         # Check the current state of what key is pressed
         self.left_pressed: bool = False
@@ -237,6 +245,9 @@ class GameWindow(arcade.Window):
         # Add player to sprite list
         self.player_list.append(self.player_sprite)
 
+        # Moving Sprite
+        self.moving_sprites_list = arcade.tilemap.tilemap.TileMap._process_layer(map_name, 'Moving Plataforms', SPRITE_SCALING_TILE)
+
         # --- Pymunk Physics Engine Setup ---
 
         # The default damping for every object controls the percent of velocity
@@ -253,6 +264,19 @@ class GameWindow(arcade.Window):
         # Create the physics engine
         self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping,
                                                          gravity=gravity)
+
+        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
+            """ Called for bullet/wall collision """
+            bullet_sprite.remove_from_sprite_lists()
+        
+        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+
+        def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
+            """" Called for bullet/wall collision """
+            bullet_sprite.remove_from_sprite_lists()
+            item_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "item", post_handler=item_hit_handler)
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -289,10 +313,14 @@ class GameWindow(arcade.Window):
                                             friction=DYNAMIC_ITEM_FRICTION,
                                             collision_type="item")
 
+        # Add kinematic sprites
+        self.physics_engine.add_sprite_list(self.moving_sprites_list,
+                                            body_type=arcade.PymunkPhysicsEngine.KINEMATIC)
+
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked """
 
-        bullet = arcade.SpriteSolidColor(20, 5, arcade.color.DARK_YELLOW)
+        bullet = BulletSprite(20, 5, arcade.color.DARK_YELLOW)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
@@ -394,11 +422,28 @@ class GameWindow(arcade.Window):
 
         self.physics_engine.step()
 
+        # For each moving sprite, see if we've reached a boundary and need to
+        # reverse course.
+        for moving_sprite in self.moving_sprites_list:
+            if moving_sprite.boundary_right and moving_sprite.change_x > 0 and moving_sprite.right > moving_sprite.boundary_right:
+                moving_sprite.change_x *= -1
+            elif moving_sprite.boundary_left and moving_sprite.change_x < 0 and moving_sprite.left > moving_sprite.boundary_left:
+                moving_sprite.change_x *= -1
+            if moving_sprite.boundary_top and \
+                    moving_sprite.change_y > 0 and \
+                    moving_sprite.top > moving_sprite.boundary_top:
+                moving_sprite.change_y *= -1
+            elif moving_sprite.boundary_bottom and \
+                    moving_sprite.change_y < 0 and \
+                    moving_sprite.bottom < moving_sprite.boundary_bottom:
+                moving_sprite.change_y *= -1
+
     def on_draw(self):
         """ Draw everting """
         self.clear()
 
         self.wall_list.draw()
+        self.moving_sprites_list.draw()
         self.bullet_list.draw()
         self.item_list.draw()
         self.player_list.draw()
