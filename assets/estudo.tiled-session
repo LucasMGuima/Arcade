@@ -3,51 +3,97 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "Tiled/map_1.tmx",
     "expandedProjectPaths": [
+        "Maps",
+        ".",
+        "Tilemap",
+        "Tiled"
     ],
     "fileStates": {
-        "Tiled/map_1.tmx": {
-            "scale": 1.393333333333333,
-            "selectedLayer": 0,
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/dirt.json": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/grass.json": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/items.json": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json": {
+            "scale": 0.318704044117647,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 252.99043062200963,
-                "y": 167.22488038277515
+                "x": 1281.7534246575342,
+                "y": 1088.784426820476
+            }
+        },
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/more_tiles.json": {
+            "scaleInDock": 1
+        },
+        "Tiled/map_1.json": {
+            "scale": 1.393333333333333,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 274.52153110047857,
+                "y": 127.75119617224885
+            }
+        },
+        "Tiled/map_1.tmx": {
+            "expandedObjectLayers": [
+                6
+            ],
+            "scale": 1,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 349.5,
+                "y": 150
             }
         },
         "Tiled/tilemap-example-a.tmx": {
             "scale": 1.774145299145299,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 210.80573286763823,
-                "y": 134.71275442611105
+                "x": 210.5239070215585,
+                "y": 134.14910273395157
             }
         },
         "Tiled/tilemap-example-b.tmx": {
             "scale": 1.774145299145299,
-            "selectedLayer": 0,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 245.47031193544504,
-                "y": 134.1491027339516
+                "x": 244.9066602432855,
+                "y": 133.5854510417921
             }
         },
         "Tiled/tileset-characters.tsx": {
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "Tiled/tileset-tiles.tsx": {
-            "scaleInEditor": 1
+            "scaleInDock": 2,
+            "scaleInEditor": 3
         }
     },
     "last.exportedFilePath": "E:/Codigos/FrozenLake/Arcade/assets/Tiled",
     "map.lastUsedExportFilter": "Ficheiros de mapa JSON (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "openFiles": [
+        "Tiled/tilemap-example-a.tmx",
+        "Tiled/tilemap-example-b.tmx",
+        "Tiled/tileset-tiles.tsx",
+        "Tiled/map_1.tmx"
     ],
     "project": "estudo.tiled-project",
     "recentFiles": [
-        "Tiled/tileset-characters.tsx",
-        "Tiled/tileset-tiles.tsx"
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
+        "Tiled/tilemap-example-b.tmx",
+        "Tiled/tilemap-example-a.tmx",
+        "Tiled/tileset-tiles.tsx",
+        "Tiled/map_1.tmx",
+        "Tiled/map_1.json",
+        "Tiled/tileset-characters.tsx"
     ]
 }

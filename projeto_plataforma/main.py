@@ -1,4 +1,6 @@
 import arcade
+import math
+import Entitys.Enemys.enemy as Enemy
 
 # Constantes
 SCREEN_WIDTH = 540
@@ -18,7 +20,7 @@ LAYER_NAME_ESCADA = "Escada"
 LAYER_NAME_DECORACAO = "Decoracao"
 LAYER_NAME_AGUA = "Agua"
 LAYER_NAME_PLAYER = "Player"
-LAYER_NAME_ENEMY = "Inimigos"
+LAYER_NAME_ENEMY = "Enemies"
 
 # Physics
 PLAYER_MOVEMENT_SPEED_SOLID = 3
@@ -69,9 +71,6 @@ class Game(arcade.Window):
             },
             LAYER_NAME_ESCADA: {
                 "use_spatial_hash": True
-            },
-            LAYER_NAME_ENEMY: {
-                "use_spatial_hash": False
             }
         }
 
@@ -89,6 +88,29 @@ class Game(arcade.Window):
             self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
         )
         self.scene.add_sprite_list_before(LAYER_NAME_PLAYER, LAYER_NAME_AGUA, False, self.player_sprite)
+
+        # Enemies
+        enemies_layer = self.tile_map.object_lists[LAYER_NAME_ENEMY]
+
+        for object in enemies_layer:
+            cartesian = self.tile_map.get_cartesian(
+                object.shape[0], object.shape[1]
+            )
+
+            enemy_type = object.type.lower()
+            if enemy_type == "flying":
+                enemy = Enemy.Flying()
+            elif enemy_type == "stomping":
+                enemy = Enemy.Stomping()
+            elif enemy_type == "drill":
+                enemy = Enemy.Drill()
+            enemy.center_x = math.floor(
+                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
+            )
+            enemy.center_y = math.floor(
+                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
+            )
+            self.scene.add_sprite(LAYER_NAME_ENEMY, enemy)
 
         # Carrega o motor
         self.physics_engine = arcade.PhysicsEnginePlatformer(
