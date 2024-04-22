@@ -103,12 +103,27 @@
  </layer>
  <objectgroup id="6" name="Enemies">
   <object id="23" type="Flying" x="234" y="72">
+   <properties>
+    <property name="change_x" type="int" value="1"/>
+    <property name="limite_dir" type="int" value="264"/>
+    <property name="limite_esq" type="int" value="204"/>
+   </properties>
    <point/>
   </object>
   <object id="24" type="Stomping" x="288" y="234">
+   <properties>
+    <property name="change_x" type="int" value="1"/>
+    <property name="limite_dir" type="int" value="300"/>
+    <property name="limite_esq" type="int" value="224"/>
+   </properties>
    <point/>
   </object>
   <object id="25" type="Drill" x="378" y="306">
+   <properties>
+    <property name="change_x" type="int" value="1"/>
+    <property name="limite_dir" type="int" value="405"/>
+    <property name="limite_esq" type="int" value="350"/>
+   </properties>
    <point/>
   </object>
  </objectgroup>

@@ -5,9 +5,9 @@
     },
     "activeFile": "Tiled/map_1.tmx",
     "expandedProjectPaths": [
-        "Maps",
-        ".",
         "Tilemap",
+        ".",
+        "Maps",
         "Tiled"
     ],
     "fileStates": {
@@ -15,17 +15,21 @@
             "scaleInDock": 1
         },
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/grass.json": {
+            "dynamicWrapping": true,
             "scaleInDock": 1
         },
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/items.json": {
             "scaleInDock": 1
         },
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json": {
+            "expandedObjectLayers": [
+                18
+            ],
             "scale": 0.318704044117647,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1281.7534246575342,
-                "y": 1088.784426820476
+                "x": 1278.615717375631,
+                "y": 1082.5090122566692
             }
         },
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/more_tiles.json": {
@@ -43,19 +47,19 @@
             "expandedObjectLayers": [
                 6
             ],
-            "scale": 1,
+            "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 349.5,
-                "y": 150
+                "x": 242.3333333333333,
+                "y": 137.33333333333334
             }
         },
         "Tiled/tilemap-example-a.tmx": {
             "scale": 1.774145299145299,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 210.5239070215585,
-                "y": 134.14910273395157
+                "x": 233.63362640009632,
+                "y": 134.99458027219075
             }
         },
         "Tiled/tilemap-example-b.tmx": {
@@ -67,6 +71,7 @@
             }
         },
         "Tiled/tileset-characters.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 2,
             "scaleInEditor": 1
         },
@@ -82,17 +87,17 @@
     "map.tileWidth": 18,
     "openFiles": [
         "Tiled/tilemap-example-a.tmx",
-        "Tiled/tilemap-example-b.tmx",
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx"
     ],
     "project": "estudo.tiled-project",
+    "property.type": "int",
     "recentFiles": [
-        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
-        "Tiled/tilemap-example-b.tmx",
         "Tiled/tilemap-example-a.tmx",
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx",
+        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
+        "Tiled/tilemap-example-b.tmx",
         "Tiled/map_1.json",
         "Tiled/tileset-characters.tsx"
     ]

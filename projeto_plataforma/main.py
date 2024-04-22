@@ -108,8 +108,16 @@ class Game(arcade.Window):
                 cartesian[0] * TILE_SCALING * self.tile_map.tile_width
             )
             enemy.center_y = math.floor(
-                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
+                (cartesian[1] + 0.7) * (self.tile_map.tile_height * TILE_SCALING)
             )
+            # Pega as propriedades do inimigo
+            print(object.properties)
+            if "limite_esq" in object.properties:
+                enemy.boundary_left = object.properties['limite_esq']
+            if "limite_dir" in object.properties:
+                enemy.boundary_right = object.properties['limite_dir']
+            if "change_x" in object.properties:
+                enemy.change_x = object.properties["change_x"]
             self.scene.add_sprite(LAYER_NAME_ENEMY, enemy)
 
         # Carrega o motor
@@ -122,6 +130,29 @@ class Game(arcade.Window):
 
     def on_update(self, delta_time: float):
         self.physics_engine.update()
+
+        # Atualiza as layer da scena
+        self.scene.update([
+            LAYER_NAME_ENEMY
+        ])
+
+        # Ve se o inimigo acerto algum limite lateral e altera a direção
+        for enemy in self.scene[LAYER_NAME_ENEMY]:
+            if(
+                enemy.boundary_right
+                and enemy.right > enemy.boundary_right
+                and enemy.change_x > 0
+            ):
+                # Inimigo carto o limite direito
+                enemy.change_x *= -1
+            
+            if(
+                enemy.boundary_left
+                and enemy.left < enemy.boundary_left
+                and enemy.change_x < 0
+            ):
+                # Inimigo carto o limite direito
+                enemy.change_x *= -1
 
         # Player collision
         player_collision_list = arcade.check_for_collision_with_lists(
