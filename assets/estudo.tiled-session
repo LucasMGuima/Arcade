@@ -1,0 +1,53 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "Tiled/map_1.tmx": {
+            "scale": 1.393333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 252.99043062200963,
+                "y": 167.22488038277515
+            }
+        },
+        "Tiled/tilemap-example-a.tmx": {
+            "scale": 1.774145299145299,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 210.80573286763823,
+                "y": 134.71275442611105
+            }
+        },
+        "Tiled/tilemap-example-b.tmx": {
+            "scale": 1.774145299145299,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 245.47031193544504,
+                "y": 134.1491027339516
+            }
+        },
+        "Tiled/tileset-characters.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiled/tileset-tiles.tsx": {
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "E:/Codigos/FrozenLake/Arcade/assets/Tiled",
+    "map.lastUsedExportFilter": "Ficheiros de mapa JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 18,
+    "map.tileWidth": 18,
+    "openFiles": [
+    ],
+    "project": "estudo.tiled-project",
+    "recentFiles": [
+        "Tiled/tileset-characters.tsx",
+        "Tiled/tileset-tiles.tsx"
+    ]
+}
