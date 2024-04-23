@@ -156,6 +156,15 @@ class Game(arcade.Window):
         # Checa se o jogador morreu
         if self.player_sprite.health <= 0:
             self.setup()
+
+        # Atualiza as animações
+        self.scene.update_animation(
+            delta_time,
+            [
+                enums.Layers.LAYER_NAME_PLAYER,
+                enums.Layers.LAYER_NAME_ENEMY,
+            ]
+        )
                 
 
     def on_draw(self):

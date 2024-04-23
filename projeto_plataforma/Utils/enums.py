@@ -10,3 +10,7 @@ class Propriets():
     BOUNDARY_LEFT = "limite_esq"
     BOUNDARY_RIGHT = "limite_dir"
     CHANGE_X = "change_x"
+
+class Direcitons():
+    LEFT_FACING = 0
+    RIGHT_FACING = 1

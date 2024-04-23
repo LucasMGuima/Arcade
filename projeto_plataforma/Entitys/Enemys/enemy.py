@@ -1,5 +1,6 @@
 import Entitys.entity as entity
 import arcade, math, Utils.enums
+from Utils.enums import Direcitons as dir
 
 class Enemy(entity.Entity):
     def __init__(self, file_path, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple, TILE_SCALING = 1):
@@ -42,18 +43,37 @@ class Enemy(entity.Entity):
             # Acerto o limite esquerdo, altera adireção
             self.change_x *= -1
 
-
 class Flying(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
         file_path = "../assets/Tiles/Characters/tile_0024.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
+
+        self.moving_animation = [
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0024.png"),
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0025.png"),
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0026.png")
+        ]
 
 class Drill(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
         file_path = "../assets/Tiles/Characters/tile_0015.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
 
+        self.moving_animation = [
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0015.png"),
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0016.png")
+        ]
+
+        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0017.png")
+
 class Stomping(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
         file_path = "../assets/Tiles/Characters/tile_0021.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
+
+        self.moving_animation = [
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0021.png"),
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0022.png")
+        ]
+
+        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0023.png")

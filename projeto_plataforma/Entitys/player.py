@@ -2,6 +2,7 @@ from typing import List
 import arcade
 import Entitys.entity as entity
 import Utils.enums as enums
+from Utils.enums import Direcitons as dir
 
 class Player(entity.Entity):
     def __init__(self, health=1, imortal_time=30, speed_on_solid: int = 3, speed_on_water: int = 1, jump_speed: int = 6):
@@ -21,6 +22,15 @@ class Player(entity.Entity):
 
         self.can_take_damge = True
         self.imortal_time = imortal_time #60fps
+
+        self.time_between_frame = 10
+
+        self.moving_animation = [
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png"),
+            self.load_texture_pair("../assets/Tiles/Characters/tile_0001.png")
+        ]
+
+        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png")
 
     def process_colision(self, collision_list: List[arcade.Sprite], scene: arcade.Scene) -> None:
         '''
