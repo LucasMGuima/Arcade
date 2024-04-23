@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="tileset-tiles" tilewidth="18" tileheight="18" tilecount="180" columns="20">
  <image source="../Tilemap/tilemap_packed.png" width="360" height="162"/>
+ <tile id="53">
+  <animation>
+   <frame tileid="53" duration="150"/>
+   <frame tileid="33" duration="150"/>
+  </animation>
+ </tile>
  <wangsets>
   <wangset name="Terreno" type="mixed" tile="-1">
    <wangcolor name="Grama" color="#ff0000" tile="122" probability="1"/>

@@ -1,6 +1,7 @@
 import arcade
 import math
 import Entitys.Enemys.enemy as Enemy
+import Entitys.player
 
 # Constantes
 SCREEN_WIDTH = 540
@@ -32,6 +33,7 @@ PLAYER_JUMP_SPEED = 14
 PLAYER_START_X = 2
 PLAYER_START_Y = 4
 
+PLAYER_LIFE = 5
 
 class Game(arcade.Window):
     def __init__(self):
@@ -41,6 +43,12 @@ class Game(arcade.Window):
         self.tile_map = None
         self.scene = None
         
+        # Camera
+        self.camera = None
+        self.gui_camera = None
+        self.end_of_map = 0
+        
+        # Player
         self.player_sprite = None
         self.up_pressed = False
         self.down_pressed = False
@@ -56,6 +64,10 @@ class Game(arcade.Window):
         arcade.set_background_color(arcade.color.BLUE_GRAY)
 
     def setup(self):
+        # Configura as cemras
+        self.camera = arcade.Camera(self.width, self.height)
+        self.gui_camera = arcade.Camera(self.width, self.height)
+
         # Carrega o TileMap
         map_name = "../assets/Tiled/map_1.tmx"
 
@@ -79,8 +91,7 @@ class Game(arcade.Window):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         
         # Player
-        sprite_name = "../assets/Tiles/Characters/tile_0000.png"
-        self.player_sprite = arcade.Sprite(sprite_name, flipped_horizontally=True)
+        self.player_sprite = Entitys.player.Player(PLAYER_LIFE)
         self.player_sprite.center_x = (
             self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
         )
@@ -111,7 +122,6 @@ class Game(arcade.Window):
                 (cartesian[1] + 0.7) * (self.tile_map.tile_height * TILE_SCALING)
             )
             # Pega as propriedades do inimigo
-            print(object.properties)
             if "limite_esq" in object.properties:
                 enemy.boundary_left = object.properties['limite_esq']
             if "limite_dir" in object.properties:
@@ -130,6 +140,9 @@ class Game(arcade.Window):
 
     def on_update(self, delta_time: float):
         self.physics_engine.update()
+
+        # Posiciona a camera
+        self.center_camera_on_player()
 
         # Atualiza as layer da scena
         self.scene.update([
@@ -159,6 +172,7 @@ class Game(arcade.Window):
             self.player_sprite,
             [
                 self.scene[LAYER_NAME_AGUA],
+                self.scene[LAYER_NAME_ENEMY]
             ]
         )
 
@@ -169,12 +183,64 @@ class Game(arcade.Window):
                 # Change player speed if on water
                 self.player_speed = PLAYER_MOVEMENT_SPEED_WATER
                 self.process_keychange()
+            
+            if self.scene[LAYER_NAME_ENEMY] in collsion.sprite_lists:
+                self.player_sprite.health -= 1
                 
 
     def on_draw(self):
         self.clear()
 
+        # Ativa a camera
+        self.camera.use()
+
         self.scene.draw()
+
+        # Ativa GUI
+        self.gui_camera.use()
+        self.draw_hearts()
+
+
+    def draw_hearts(self):
+        health = self.player_sprite.health
+
+        qtd_full_heart = health//2
+        qtd_halth_heart = health%2
+
+        # Desenha os corações cheios
+        for heart in range(qtd_full_heart):
+            arcade.draw_texture_rectangle(
+                center_x = 18 * (heart+1),
+                center_y = SCREEN_HEIGHT - 18,
+                texture = arcade.load_texture("../assets/Tiles/tile_0044.png"),
+                width=18,
+                height=18
+            )
+
+        # Desenha os corações meiados
+        for heart in range(qtd_halth_heart):
+            arcade.draw_texture_rectangle(
+                center_x = 18 * (heart+qtd_full_heart+1),
+                center_y = SCREEN_HEIGHT - 18,
+                texture = arcade.load_texture("../assets/Tiles/tile_0045.png"),
+                width=18,
+                height=18
+            )
+
+    def center_camera_on_player(self):
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width/2)
+        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height/2)
+
+        # Não deixa a camera sair do mapa
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_x > self.camera.viewport_width:
+            screen_center_x = self.camera.viewport_width
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
 
     def process_keychange(self):
         """
