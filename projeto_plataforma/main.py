@@ -2,6 +2,7 @@ import arcade
 import math
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
+import Utils.camera as camera
 
 # Constantes
 SCREEN_WIDTH = 540
@@ -34,6 +35,7 @@ PLAYER_START_X = 2
 PLAYER_START_Y = 4
 
 PLAYER_LIFE = 5
+PLAYER_IMORTAL_TIME = 30
 
 class Game(arcade.Window):
     def __init__(self):
@@ -57,6 +59,7 @@ class Game(arcade.Window):
         self.jump_needs_reset = False
         self.score = 0
         self.player_speed = PLAYER_MOVEMENT_SPEED_SOLID
+        self.player_imortal_timer = 0
 
         self.physics_engine = None
 
@@ -65,8 +68,8 @@ class Game(arcade.Window):
 
     def setup(self):
         # Configura as cemras
-        self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        self.camera = camera.Camera(self.width, self.height)
+        self.gui_camera = camera.Camera(self.width, self.height)
 
         # Carrega o TileMap
         map_name = "../assets/Tiled/map_1.tmx"
@@ -92,6 +95,7 @@ class Game(arcade.Window):
         
         # Player
         self.player_sprite = Entitys.player.Player(PLAYER_LIFE)
+        self.player_imortal_timer = 0
         self.player_sprite.center_x = (
             self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
         )
@@ -142,7 +146,7 @@ class Game(arcade.Window):
         self.physics_engine.update()
 
         # Posiciona a camera
-        self.center_camera_on_player()
+        self.camera.center_on_sprite(self.player_sprite)
 
         # Atualiza as layer da scena
         self.scene.update([
@@ -176,7 +180,14 @@ class Game(arcade.Window):
             ]
         )
 
-        # Reset player speed
+        # Timer de imortalidade pos dano do jogador
+        if not self.player_sprite.can_take_damge:
+            self.player_imortal_timer += 1
+            if self.player_imortal_timer >= self.player_sprite.imortal_time:
+                self.player_sprite.can_take_damge = True
+                self.player_imortal_timer = 0
+
+        # Muda a velocidade do jogador e checa por colisão com inimigos
         self.player_speed = PLAYER_MOVEMENT_SPEED_SOLID
         for collsion in player_collision_list:
             if self.scene[LAYER_NAME_AGUA] in collsion.sprite_lists:
@@ -185,7 +196,13 @@ class Game(arcade.Window):
                 self.process_keychange()
             
             if self.scene[LAYER_NAME_ENEMY] in collsion.sprite_lists:
-                self.player_sprite.health -= 1
+                if self.player_sprite.can_take_damge:
+                    self.player_sprite.health -= 1
+                    self.player_sprite.can_take_damge = False
+
+        # Checa se o jogador morreu
+        if self.player_sprite.health <= 0:
+            self.setup()
                 
 
     def on_draw(self):
@@ -226,21 +243,6 @@ class Game(arcade.Window):
                 width=18,
                 height=18
             )
-
-    def center_camera_on_player(self):
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width/2)
-        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height/2)
-
-        # Não deixa a camera sair do mapa
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_x > self.camera.viewport_width:
-            screen_center_x = self.camera.viewport_width
-        if screen_center_y < 0:
-            screen_center_y = 0
-        player_centered = screen_center_x, screen_center_y
-
-        self.camera.move_to(player_centered)
 
     def process_keychange(self):
         """
