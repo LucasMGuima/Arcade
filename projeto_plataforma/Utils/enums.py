@@ -5,3 +5,8 @@ class Layers():
     LAYER_NAME_AGUA = "Agua"
     LAYER_NAME_PLAYER = "Player"
     LAYER_NAME_ENEMY = "Enemies"
+
+class Propriets():
+    BOUNDARY_LEFT = "limite_esq"
+    BOUNDARY_RIGHT = "limite_dir"
+    CHANGE_X = "change_x"

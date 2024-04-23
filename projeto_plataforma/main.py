@@ -1,5 +1,4 @@
 import arcade
-import math
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
 import Utils.camera as camera
@@ -16,14 +15,6 @@ CHARACTER_SCALING = TILE_SCALING * 2
 COIN_SCALING = TILE_SCALING
 SPRITE_PIXEL_SIZE = 18
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
-
-# Nome das layer
-LAYER_NAME_PLATAFORMS = "Plataformas"
-LAYER_NAME_ESCADA = "Escada"
-LAYER_NAME_DECORACAO = "Decoracao"
-LAYER_NAME_AGUA = "Agua"
-LAYER_NAME_PLAYER = "Player"
-LAYER_NAME_ENEMY = "Enemies"
 
 # Physics
 PLAYER_MOVEMENT_SPEED_SOLID = 3
@@ -108,25 +99,15 @@ class Game(arcade.Window):
             )
 
             enemy_type = object.type.lower()
+            tileMap_size = (self.tile_map.tile_width, self.tile_map.tile_height)
+
             if enemy_type == "flying":
-                enemy = Enemy.Flying()
+                enemy = Enemy.Flying(object, cartesian, tileMap_size)
             elif enemy_type == "stomping":
-                enemy = Enemy.Stomping()
+                enemy = Enemy.Stomping(object, cartesian, tileMap_size)
             elif enemy_type == "drill":
-                enemy = Enemy.Drill()
-            enemy.center_x = math.floor(
-                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
-            )
-            enemy.center_y = math.floor(
-                (cartesian[1] + 0.7) * (self.tile_map.tile_height * TILE_SCALING)
-            )
-            # Pega as propriedades do inimigo
-            if "limite_esq" in object.properties:
-                enemy.boundary_left = object.properties['limite_esq']
-            if "limite_dir" in object.properties:
-                enemy.boundary_right = object.properties['limite_dir']
-            if "change_x" in object.properties:
-                enemy.change_x = object.properties["change_x"]
+                enemy = Enemy.Drill(object, cartesian, tileMap_size)
+
             self.scene.add_sprite(enums.Layers.LAYER_NAME_ENEMY, enemy)
 
         # Carrega o motor
@@ -148,23 +129,10 @@ class Game(arcade.Window):
             enums.Layers.LAYER_NAME_ENEMY
         ])
 
-        # Ve se o inimigo acerto algum limite lateral e altera a direção
+        # Atualiza os inimgos
         for enemy in self.scene[enums.Layers.LAYER_NAME_ENEMY]:
-            if(
-                enemy.boundary_right
-                and enemy.right > enemy.boundary_right
-                and enemy.change_x > 0
-            ):
-                # Inimigo carto o limite direito
-                enemy.change_x *= -1
-            
-            if(
-                enemy.boundary_left
-                and enemy.left < enemy.boundary_left
-                and enemy.change_x < 0
-            ):
-                # Inimigo carto o limite direito
-                enemy.change_x *= -1
+            # Atualiza a direção
+            enemy.update_direction()
 
         # Player collision
         player_collision_list = arcade.check_for_collision_with_lists(
@@ -182,6 +150,7 @@ class Game(arcade.Window):
                 self.player_sprite.can_take_damge = True
                 self.player_imortal_timer = 0
 
+        # Processa a colisão do jogador
         self.player_sprite.process_colision(player_collision_list, self.scene)
 
         # Checa se o jogador morreu
@@ -227,36 +196,6 @@ class Game(arcade.Window):
                 width=18,
                 height=18
             )
-
-    def process_keychange(self):
-        """
-        Called when we change a key up/down or we move on/off a ladder.
-        """
-        # Process up/down
-        if self.up_pressed and not self.down_pressed:
-            if self.physics_engine.is_on_ladder():
-                self.player_sprite.change_y = self.player_sprite.speed
-            elif(self.physics_engine.can_jump(y_distance=10) and not self.jump_needs_reset):
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-                self.jump_needs_reset = True
-        elif self.down_pressed and not self.up_pressed:
-            if self.physics_engine.is_on_ladder():
-                self.player_sprite.change_y = -self.player_sprite.speed
-        
-        # Process up/down when on ladder and no movement
-        if self.physics_engine.is_on_ladder():
-            if not self.up_pressed and not self.down_pressed:
-                self.player_sprite.change_y = 0
-            elif self.up_pressed and self.down_pressed:
-                self.player_sprite.change_y = 0
-
-        # Process left/right
-        if self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x = self.player_sprite.speed
-        elif self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -self.player_sprite.speed
-        else:
-            self.player_sprite.change_x = 0
 
     def on_key_press(self, key: int, modifiers: int):
         
