@@ -1,6 +1,7 @@
 import arcade
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
+import Entitys.colletable as collect
 import Utils.camera as camera
 import Utils.enums as enums
 
@@ -72,6 +73,15 @@ class Game(arcade.Window):
             },
             enums.Layers.LAYER_NAME_ESCADA: {
                 "use_spatial_hash": True
+            },
+            enums.Layers.LAYER_NAME_COLLETABLES: {
+                "use_spatial_hash": True
+            },
+            enums.Layers.LAYER_NAME_DECORACAO_DETALHES: {
+                "use_spatial_hash": True
+            },
+            enums.Layers.LAYER_NAME_TRAP:{
+                "use_spatial_hash": True
             }
         }
 
@@ -89,6 +99,7 @@ class Game(arcade.Window):
             self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
         )
         self.scene.add_sprite_list_before(enums.Layers.LAYER_NAME_PLAYER, enums.Layers.LAYER_NAME_AGUA, False, self.player_sprite)
+
 
         # Enemies
         enemies_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_ENEMY]
@@ -109,6 +120,26 @@ class Game(arcade.Window):
                 enemy = Enemy.Drill(object, cartesian, tileMap_size)
 
             self.scene.add_sprite(enums.Layers.LAYER_NAME_ENEMY, enemy)
+
+        # Coletaveis
+        colletables_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_COLLETABLES]
+
+        for object in colletables_layer:
+            cartesian = self.tile_map.get_cartesian(
+                object.shape[0], object.shape[1]
+            )
+
+            colletable_type = object.type.lower()
+            tileMap_size = (self.tile_map.tile_width, self.tile_map.tile_height)
+
+            if colletable_type == enums.ObjectTypes.COIN:
+                colletable = collect.Coin(cartesian, tileMap_size)
+            elif colletable_type == enums.ObjectTypes.BLOCK_ITEM:
+                colletable = collect.BlockItem(cartesian, tileMap_size)
+            elif colletable_type == enums.ObjectTypes.BLOCK_KEY:
+                colletable = collect.BlockKey(cartesian, tileMap_size)
+
+            self.scene.add_sprite(enums.Layers.LAYER_NAME_COLLETABLES, colletable)
 
         # Carrega o motor
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -139,7 +170,8 @@ class Game(arcade.Window):
             self.player_sprite,
             [
                 self.scene[enums.Layers.LAYER_NAME_AGUA],
-                self.scene[enums.Layers.LAYER_NAME_ENEMY]
+                self.scene[enums.Layers.LAYER_NAME_ENEMY],
+                self.scene[enums.Layers.LAYER_NAME_COLLETABLES]
             ]
         )
 

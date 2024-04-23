@@ -5,6 +5,9 @@ class Layers():
     LAYER_NAME_AGUA = "Agua"
     LAYER_NAME_PLAYER = "Player"
     LAYER_NAME_ENEMY = "Enemies"
+    LAYER_NAME_TRAP = "Armadilhas"
+    LAYER_NAME_COLLETABLES = "Coletaveis"
+    LAYER_NAME_DECORACAO_DETALHES = "Decoracao_Detalhes"
 
 class Propriets():
     BOUNDARY_LEFT = "limite_esq"
@@ -14,3 +17,10 @@ class Propriets():
 class Direcitons():
     LEFT_FACING = 0
     RIGHT_FACING = 1
+
+class ObjectTypes():
+    # Coletaveis
+    BLOCK_ITEM = "bloco_item"
+    COIN = "coin"
+    BLOCK_KEY = "bloco_chave"
+    # Inimigos
