@@ -2,6 +2,7 @@ import arcade
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
 import Entitys.colletable as collect
+import Entitys.containers as containers
 import Utils.camera as camera
 import Utils.enums as enums
 
@@ -47,6 +48,7 @@ class Game(arcade.Window):
         self.player_sprite = None
         self.score = 0
         self.player_imortal_timer = 0
+        self.score = 0
 
         self.physics_engine = None
 
@@ -132,12 +134,13 @@ class Game(arcade.Window):
             colletable_type = object.type.lower()
             tileMap_size = (self.tile_map.tile_width, self.tile_map.tile_height)
 
+            #TODO: Separar a layer de coletaveis em coletaveis e containers
             if colletable_type == enums.ObjectTypes.COIN:
                 colletable = collect.Coin(cartesian, tileMap_size)
             elif colletable_type == enums.ObjectTypes.BLOCK_ITEM:
-                colletable = collect.BlockItem(cartesian, tileMap_size)
+                colletable = containers.BlockItem(cartesian, tileMap_size)
             elif colletable_type == enums.ObjectTypes.BLOCK_KEY:
-                colletable = collect.BlockKey(cartesian, tileMap_size)
+                colletable = containers.BlockKey(cartesian, tileMap_size)
 
             self.scene.add_sprite(enums.Layers.LAYER_NAME_COLLETABLES, colletable)
 
@@ -175,6 +178,11 @@ class Game(arcade.Window):
             ]
         )
 
+        for collision in player_collision_list:
+            # Checa por colisão com um coletavel
+            if self.scene[enums.Layers.LAYER_NAME_COLLETABLES] in collision.sprite_lists:
+                self.score += collision.collected()
+
         # Timer de imortalidade pos dano do jogador
         if not self.player_sprite.can_take_damge:
             self.player_imortal_timer += 1
@@ -210,7 +218,17 @@ class Game(arcade.Window):
         # Ativa GUI
         self.gui_camera.use()
         self.draw_hearts()
+        self.draw_score()
 
+    def draw_score(self):
+        score_text = f"{self.score}"
+        arcade.draw_text(
+            score_text,
+            12,
+            SCREEN_HEIGHT - 40,
+            arcade.csscolor.BLACK,
+            9,
+        )
 
     def draw_hearts(self):
         health = self.player_sprite.health

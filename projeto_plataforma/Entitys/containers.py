@@ -1,6 +1,6 @@
 import arcade, math
 
-class Colletable(arcade.Sprite):
+class Container(arcade.Sprite):
     def __init__(self, filepath: str, cartesian: tuple,  tileMap_size: tuple, TILE_SCALING: int = 1):
         super().__init__()
 
@@ -15,18 +15,10 @@ class Colletable(arcade.Sprite):
             (cartesian[1] + 0.7) * (tileMap_size[1] * TILE_SCALING)
         )
 
-    def collected(self):
-        self.remove_from_sprite_lists()
-
-class Coin(Colletable):
+class BlockItem(Container):
     def __init__(self, cartesian: tuple, tileMap_size: tuple):
-        super().__init__("../assets/Tiles/tile_0151.png", cartesian, tileMap_size)
-        self.value = 1
-    
-    def collected(self) -> int:
-        '''
-            Se retira da lista de coletaveis e retorna o seu valor
-        '''
-        super().collected()
-        return self.value
+        super().__init__("../assets/Tiles/tile_0030.png", cartesian, tileMap_size)
 
+class BlockKey(Container):
+    def __init__(self, cartesian: tuple, tileMap_size: tuple):
+        super().__init__("../assets/Tiles/tile_0028.png", cartesian, tileMap_size)
