@@ -1,5 +1,5 @@
 from typing import List
-import arcade
+import arcade, random
 import Entitys.entity as entity
 import Utils.enums as enums
 from Utils.enums import Direcitons as dir
@@ -46,7 +46,13 @@ class Player(entity.Entity):
 
             # Checa por colisão com um inimigo
             if scene[enums.Layers.LAYER_NAME_ENEMY] in collision.sprite_lists:
-                if self.can_take_damge:
+                if self.center_y > collision.center_y:
+                    self.change_y = self.jump_speed * 0.75
+                    if not collision.spike_head:
+                        collision.take_damage(1)
+                    else:
+                        self.health -= 1
+                elif self.can_take_damge:
                     self.health -= 1
                     self.can_take_damge = False
 

@@ -208,6 +208,9 @@ class Game(arcade.Window):
 
     def on_key_press(self, key: int, modifiers: int):
         
+        if key == arcade.key.R:
+            self.setup()
+
         if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.up_pressed = True
         elif key == arcade.key.DOWN or key == arcade.key.S:

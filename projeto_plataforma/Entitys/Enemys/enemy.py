@@ -22,6 +22,7 @@ class Enemy(entity.Entity):
             self.boundary_right = object.properties[p.BOUNDARY_RIGHT]
         if p.CHANGE_X in object.properties:
             self.change_x = object.properties[p.CHANGE_X]
+        self.spike_head = False
 
     def update_direction(self) -> None:
         '''
@@ -43,6 +44,11 @@ class Enemy(entity.Entity):
             # Acerto o limite esquerdo, altera adireção
             self.change_x *= -1
 
+    def take_damage(self, damage: int) -> None:
+        self.health -= damage
+            
+        if self.health <= 0: self.remove_from_sprite_lists()
+
 class Flying(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
         file_path = "../assets/Tiles/Characters/tile_0024.png"
@@ -53,6 +59,8 @@ class Flying(Enemy):
             self.load_texture_pair("../assets/Tiles/Characters/tile_0025.png"),
             self.load_texture_pair("../assets/Tiles/Characters/tile_0026.png")
         ]
+
+        self.health = 1
 
 class Drill(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
@@ -66,6 +74,9 @@ class Drill(Enemy):
 
         self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0017.png")
 
+        self.health = 2
+        self.spike_head = True
+
 class Stomping(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
         file_path = "../assets/Tiles/Characters/tile_0021.png"
@@ -77,3 +88,5 @@ class Stomping(Enemy):
         ]
 
         self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0023.png")
+
+        self.health = 4

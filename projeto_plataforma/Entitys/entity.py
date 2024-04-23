@@ -5,6 +5,9 @@ class Entity(arcade.Sprite):
     def __init__(self, file_path, health = 1):
         super().__init__()
 
+        self.texture = arcade.load_texture(file_path, flipped_horizontally=True)
+        self.set_hit_box(self.texture.hit_box_points)
+
         self.health = health
         self.speed = 0
 
@@ -16,9 +19,6 @@ class Entity(arcade.Sprite):
 
         self.moving_animation = None
         self.idle_animation = None
-
-        self.texture = arcade.load_texture(file_path, flipped_horizontally=True)
-        self.set_hit_box(self.texture.hit_box_points)
 
     def load_texture_pair(self, filename: str) -> tuple:
         '''
