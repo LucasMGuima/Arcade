@@ -84,9 +84,6 @@ class Game(arcade.Window):
             },
             enums.Layers.LAYER_NAME_DECORACAO_DETALHES: {
                 "use_spatial_hash": True
-            },
-            enums.Layers.LAYER_NAME_INTERATIVOS:{
-                "use_spatial_hash": True
             }
         }
 
@@ -178,7 +175,8 @@ class Game(arcade.Window):
             [
                 self.scene[enums.Layers.LAYER_NAME_AGUA],
                 self.scene[enums.Layers.LAYER_NAME_ENEMY],
-                self.scene[enums.Layers.LAYER_NAME_COLLETABLES]
+                self.scene[enums.Layers.LAYER_NAME_COLLETABLES],
+                self.scene[enums.Layers.LAYER_NAME_ESPINHOS]
             ]
         )
 

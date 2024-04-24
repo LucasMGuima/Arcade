@@ -56,6 +56,11 @@ class Player(entity.Entity):
                     self.health -= 1
                     self.can_take_damge = False
 
+            # Checa por colisão com espinhos
+            if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
+                if self.change_y < 0:
+                    self.health -= 1
+
     def process_keychange(self, on_ladder: bool, can_jump: bool) -> None:
         '''
             Processa a alteração das teclas cima/baixo e esquerda/direita ou quando nos movemos ou saimos de uma escada.

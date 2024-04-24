@@ -5,7 +5,9 @@ class Layers():
     LAYER_NAME_AGUA = "Agua"
     LAYER_NAME_PLAYER = "Player"
     LAYER_NAME_ENEMY = "Enemies"
-    LAYER_NAME_INTERATIVOS = "Interativos"
+    LAYER_NAME_IPORTAS = "Portas"
+    LAYER_NAME_ESPINHOS = "Espinhos"
+    LAYER_NAME_TRAMPOLINS = "Trampolins"
     LAYER_NAME_COLLETABLES = "Coletaveis"
     LAYER_NAME_DECORACAO_DETALHES = "Decoracao_Detalhes"
 
