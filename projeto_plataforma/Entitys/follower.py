@@ -1,5 +1,6 @@
 import arcade, math
 from Entitys.player import Player as Player
+import Utils.enums as enums
 
 class Follower(arcade.Sprite):
     def __init__(self, cartesian: tuple,  tileMap_size: tuple, TILE_SCALING = 1):
@@ -25,5 +26,8 @@ class Follower(arcade.Sprite):
 
     def update(self):
         if self.fallowing:
-            self.center_x = self.tracking.center_x - 18
+            if self.tracking.facing_direction == enums.Direcitons.RIGHT_FACING:
+                self.center_x = self.tracking.center_x - 18
+            else:
+                self.center_x = self.tracking.center_x + 18
             self.center_y = self.tracking.center_y + 18
