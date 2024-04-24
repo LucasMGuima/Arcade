@@ -61,6 +61,11 @@ class Player(entity.Entity):
                 if self.change_y < 0:
                     self.health -= 1
 
+            # Checa por uma colisão com trampolins
+            if scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists:
+                if self.center_y > collision.center_y:
+                    self.change_y = self.jump_speed * 1.5
+
     def process_keychange(self, on_ladder: bool, can_jump: bool) -> None:
         '''
             Processa a alteração das teclas cima/baixo e esquerda/direita ou quando nos movemos ou saimos de uma escada.

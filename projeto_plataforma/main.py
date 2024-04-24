@@ -176,7 +176,8 @@ class Game(arcade.Window):
                 self.scene[enums.Layers.LAYER_NAME_AGUA],
                 self.scene[enums.Layers.LAYER_NAME_ENEMY],
                 self.scene[enums.Layers.LAYER_NAME_COLLETABLES],
-                self.scene[enums.Layers.LAYER_NAME_ESPINHOS]
+                self.scene[enums.Layers.LAYER_NAME_ESPINHOS],
+                self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS]
             ]
         )
 
