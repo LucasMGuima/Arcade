@@ -5,7 +5,7 @@ class Layers():
     LAYER_NAME_AGUA = "Agua"
     LAYER_NAME_PLAYER = "Player"
     LAYER_NAME_ENEMY = "Enemies"
-    LAYER_NAME_TRAP = "Armadilhas"
+    LAYER_NAME_INTERATIVOS = "Interativos"
     LAYER_NAME_COLLETABLES = "Coletaveis"
     LAYER_NAME_DECORACAO_DETALHES = "Decoracao_Detalhes"
 
@@ -20,7 +20,7 @@ class Direcitons():
 
 class ObjectTypes():
     # Coletaveis
-    BLOCK_ITEM = "bloco_item"
     COIN = "coin"
-    BLOCK_KEY = "bloco_chave"
+    KEY = "key"
+    GEN = "gen"
     # Inimigos

@@ -2,7 +2,7 @@ import arcade
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
 import Entitys.colletable as collect
-import Entitys.containers as containers
+import Entitys.follower as follower
 import Utils.camera as camera
 import Utils.enums as enums
 
@@ -56,7 +56,10 @@ class Game(arcade.Window):
         arcade.set_background_color(arcade.color.BLUE_GRAY)
 
     def setup(self):
-        # Configura as cemras
+        # Reset score
+        self.score = 0
+
+        # Configura as cameras
         self.camera = camera.Camera(self.width, self.height)
         self.gui_camera = camera.Camera(self.width, self.height)
 
@@ -82,7 +85,7 @@ class Game(arcade.Window):
             enums.Layers.LAYER_NAME_DECORACAO_DETALHES: {
                 "use_spatial_hash": True
             },
-            enums.Layers.LAYER_NAME_TRAP:{
+            enums.Layers.LAYER_NAME_INTERATIVOS:{
                 "use_spatial_hash": True
             }
         }
@@ -137,11 +140,11 @@ class Game(arcade.Window):
             #TODO: Separar a layer de coletaveis em coletaveis e containers
             if colletable_type == enums.ObjectTypes.COIN:
                 colletable = collect.Coin(cartesian, tileMap_size)
-            elif colletable_type == enums.ObjectTypes.BLOCK_ITEM:
-                colletable = containers.BlockItem(cartesian, tileMap_size)
-            elif colletable_type == enums.ObjectTypes.BLOCK_KEY:
-                colletable = containers.BlockKey(cartesian, tileMap_size)
-
+            elif colletable_type == enums.ObjectTypes.GEN:
+                colletable = collect.Gen(cartesian, tileMap_size)
+            elif colletable_type == enums.ObjectTypes.KEY:
+                colletable = follower.Follower(cartesian, tileMap_size)
+            
             self.scene.add_sprite(enums.Layers.LAYER_NAME_COLLETABLES, colletable)
 
         # Carrega o motor
@@ -160,7 +163,8 @@ class Game(arcade.Window):
 
         # Atualiza as layer da scena
         self.scene.update([
-            enums.Layers.LAYER_NAME_ENEMY
+            enums.Layers.LAYER_NAME_ENEMY,
+            enums.Layers.LAYER_NAME_COLLETABLES
         ])
 
         # Atualiza os inimgos
@@ -179,9 +183,14 @@ class Game(arcade.Window):
         )
 
         for collision in player_collision_list:
-            # Checa por colisão com um coletavel
+            # Checa por colisão
             if self.scene[enums.Layers.LAYER_NAME_COLLETABLES] in collision.sprite_lists:
-                self.score += collision.collected()
+                # Verifica com oque colidiu para chamar a função de colisão correta
+                if "colletable" in str(type(collision)):
+                    collision.collected(self)
+                elif "follower" in str(type(collision)):
+                    collision.collision(self.player_sprite)
+            
 
         # Timer de imortalidade pos dano do jogador
         if not self.player_sprite.can_take_damge:
@@ -219,6 +228,12 @@ class Game(arcade.Window):
         self.gui_camera.use()
         self.draw_hearts()
         self.draw_score()
+
+    def increment_score(self, value: int) -> None:
+        '''
+            Incrementa a pontuação atual
+        '''
+        self.score += value
 
     def draw_score(self):
         score_text = f"{self.score}"
