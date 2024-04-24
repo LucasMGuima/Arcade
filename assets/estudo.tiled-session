@@ -5,10 +5,10 @@
     },
     "activeFile": "Tiled/map_1.tmx",
     "expandedProjectPaths": [
-        "Maps",
-        ".",
         "Tiled",
-        "Tilemap"
+        "Tilemap",
+        ".",
+        "Maps"
     ],
     "fileStates": {
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/dirt.json": {
@@ -50,8 +50,8 @@
             "scale": 1.5,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 948.3333333333333,
-                "y": 134.66666666666669
+                "x": 700.3333333333333,
+                "y": 134
             }
         },
         "Tiled/tilemap-example-a.tmx": {
