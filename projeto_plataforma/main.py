@@ -31,9 +31,9 @@ PLAYER_START_Y = 4
 PLAYER_LIFE = 5
 PLAYER_IMORTAL_TIME = 30
 
-class Game(arcade.Window):
+class Game(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
+        super().__init__()
 
         # Variavies
         self.tile_map = None
@@ -60,8 +60,8 @@ class Game(arcade.Window):
         self.score = 0
 
         # Configura as cameras
-        self.camera = camera.Camera(self.width, self.height)
-        self.gui_camera = camera.Camera(self.width, self.height)
+        self.camera = camera.Camera(self.window.width, self.window.height)
+        self.gui_camera = camera.Camera(self.window.width, self.window.height)
 
         # Carrega o TileMap
         map_name = "../assets/Tiled/map_1.tmx"
@@ -151,6 +151,9 @@ class Game(arcade.Window):
             ladders=self.scene[enums.Layers.LAYER_NAME_ESCADA],
             gravity_constant=GRAVITY
         )
+
+    def on_show_view(self):
+        self.setup()
 
     def on_update(self, delta_time: float):
         self.physics_engine.update()
@@ -319,8 +322,9 @@ class Game(arcade.Window):
         self.player_sprite.process_keychange(self.physics_engine.is_on_ladder(), self.physics_engine.can_jump(10))
 
 def main():
-    window = Game()
-    window.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
+    gameWindow = Game()
+    window.show_view(gameWindow)
     arcade.run()
 
 if __name__ == "__main__":
