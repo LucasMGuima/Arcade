@@ -1,4 +1,5 @@
 import arcade
+import arcade.color
 import Entitys.Enemys.enemy as Enemy
 import Entitys.player
 import Entitys.colletable as collect
@@ -30,6 +31,65 @@ PLAYER_START_Y = 4
 
 PLAYER_LIFE = 5
 PLAYER_IMORTAL_TIME = 30
+
+#-- Menus --
+class MainMenu(arcade.View):
+    def on_show_view(self):
+        arcade.set_background_color(arcade.color.ASH_GREY)
+
+    def on_draw(self):
+        self.clear()
+
+        arcade.draw_text(
+            "Tiny Jumper",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT/2,
+            arcade.color.BLACK,
+            font_size=30,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "- Click to play -",
+            SCREEN_WIDTH/2,
+            (SCREEN_HEIGHT/2)-34,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center"
+        )
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        game_view = Game()
+        self.window.show_view(game_view)
+
+class GameOver(arcade.View):
+    def on_show_view(self):
+        arcade.set_background_color(arcade.color.RED_BROWN)
+    
+    def on_draw(self):
+        self.clear()
+
+        arcade.draw_text(
+            "GAME OVER",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT/2,
+            arcade.color.BLACK,
+            font_size=30,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "- Click to play -",
+            SCREEN_WIDTH/2,
+            (SCREEN_HEIGHT/2)-34,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center"
+        )
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        game_view = Game()
+        self.window.show_view(game_view)
 
 class Game(arcade.View):
     def __init__(self):
@@ -220,7 +280,9 @@ class Game(arcade.View):
 
         # Checa se o jogador morreu
         if self.player_sprite.health <= 0:
-            self.setup()
+            # Troca para a tela de Game Over
+            gameOver_view = GameOver()
+            self.window.show_view(gameOver_view)
 
         # Atualiza as animações
         self.scene.update_animation(
@@ -323,8 +385,8 @@ class Game(arcade.View):
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
-    gameWindow = Game()
-    window.show_view(gameWindow)
+    mainMenu = MainMenu()
+    window.show_view(mainMenu)
     arcade.run()
 
 if __name__ == "__main__":
