@@ -22,6 +22,7 @@ class Follower(arcade.Sprite):
     def collision(self, player: Player):
         if not self.fallowing:
             self.fallowing = True
+            player.has_key = True
             self.tracking = player
 
     def update(self):

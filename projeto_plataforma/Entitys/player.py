@@ -25,6 +25,8 @@ class Player(entity.Entity):
 
         self.time_between_frame = 10
 
+        self.has_key = False
+
         self.moving_animation = [
             self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png"),
             self.load_texture_pair("../assets/Tiles/Characters/tile_0001.png")
@@ -58,12 +60,15 @@ class Player(entity.Entity):
 
             # Checa por colisão com espinhos
             if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
-                if self.change_y < 0:
+                if self.change_y < 0 and self.can_take_damge:
                     self.health -= 1
+                    self.can_take_damge = False
+                else:
+                    self.can_take_damge = True
 
             # Checa por uma colisão com trampolins
             if scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists:
-                if self.center_y > collision.center_y:
+                if (self.center_y > collision.center_y) and self.change_y != 0:
                     self.change_y = self.jump_speed * 1.5
 
     def process_keychange(self, on_ladder: bool, can_jump: bool) -> None:

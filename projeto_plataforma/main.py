@@ -175,21 +175,10 @@ class Game(arcade.Window):
             [
                 self.scene[enums.Layers.LAYER_NAME_AGUA],
                 self.scene[enums.Layers.LAYER_NAME_ENEMY],
-                self.scene[enums.Layers.LAYER_NAME_COLLETABLES],
                 self.scene[enums.Layers.LAYER_NAME_ESPINHOS],
                 self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS]
             ]
         )
-
-        for collision in player_collision_list:
-            # Checa por colisão
-            if self.scene[enums.Layers.LAYER_NAME_COLLETABLES] in collision.sprite_lists:
-                # Verifica com oque colidiu para chamar a função de colisão correta
-                if "colletable" in str(type(collision)):
-                    collision.collected(self)
-                elif "follower" in str(type(collision)):
-                    collision.collision(self.player_sprite)
-            
 
         # Timer de imortalidade pos dano do jogador
         if not self.player_sprite.can_take_damge:
@@ -201,6 +190,31 @@ class Game(arcade.Window):
         # Processa a colisão do jogador
         self.player_sprite.process_colision(player_collision_list, self.scene)
 
+        # Colisão dos coletaveis
+        collectabels_collision_list = arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.scene[enums.Layers.LAYER_NAME_COLLETABLES]
+        )
+
+        for collectable in collectabels_collision_list:
+            if "follower" in str(type(collectable)):
+                collectable.collision(self.player_sprite)
+            else:
+                collectable.collision()
+                self.score += collectable.value
+
+
+        # Checa se o jogador chegou a uma porta
+        door_collision = arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.scene[enums.Layers.LAYER_NAME_PORTAS]
+        )
+
+        for door in door_collision:
+            # Se o jogador tiver uma chave vai pro próximo nivel
+            if self.player_sprite.has_key:
+                self.setup()
+
         # Checa se o jogador morreu
         if self.player_sprite.health <= 0:
             self.setup()
@@ -211,6 +225,7 @@ class Game(arcade.Window):
             [
                 enums.Layers.LAYER_NAME_PLAYER,
                 enums.Layers.LAYER_NAME_ENEMY,
+                enums.Layers.LAYER_NAME_COLLETABLES
             ]
         )
                 
@@ -236,13 +251,16 @@ class Game(arcade.Window):
 
     def draw_score(self):
         score_text = f"{self.score}"
-        arcade.draw_text(
-            score_text,
-            12,
-            SCREEN_HEIGHT - 40,
-            arcade.csscolor.BLACK,
-            9,
-        )
+        pos_num = 0
+        for num in score_text:
+            arcade.draw_texture_rectangle(
+                texture = arcade.load_texture(f"../assets/Tiles/tile_016{num}.png"),
+                center_x = 10 * (pos_num+1),
+                center_y = SCREEN_HEIGHT - 34,
+                width=18,
+                height=18
+            )
+            pos_num += 1
 
     def draw_hearts(self):
         health = self.player_sprite.health
