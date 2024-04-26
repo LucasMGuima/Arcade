@@ -32,10 +32,18 @@ PLAYER_START_Y = 4
 PLAYER_LIFE = 5
 PLAYER_IMORTAL_TIME = 30
 
+# Sons
+HURT_SOUND = arcade.load_sound(":resources:sounds/hurt3.wav")
+HIT_SOUND = arcade.load_sound(":resources:sounds/hit4.wav")
+JUMP_SOUND = arcade.load_sound(":resources:sounds/jump5.wav")
+COIN_SOUND = arcade.load_sound(":resources:sounds/coin3.wav")
+GAME_OVER = arcade.load_sound(":resources:sounds/gameover3.wav")
+
 #-- Menus --
 class MainMenu(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
+        arcade.play_sound(COIN_SOUND)
 
     def on_draw(self):
         self.clear()
@@ -44,8 +52,19 @@ class MainMenu(arcade.View):
             "Tiny Jumper",
             SCREEN_WIDTH/2,
             SCREEN_HEIGHT/2,
+            arcade.color.BLUE_VIOLET,
+            font_name="8-bit Arcade In",
+            font_size=48,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "Tiny Jumper",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT/2,
             arcade.color.BLACK,
-            font_size=30,
+            font_name="8-bit Arcade Out",
+            font_size=48,
             anchor_x="center"
         )
 
@@ -54,7 +73,8 @@ class MainMenu(arcade.View):
             SCREEN_WIDTH/2,
             (SCREEN_HEIGHT/2)-34,
             arcade.color.BLACK,
-            font_size=20,
+            font_name="VCR OSD MONO",
+            font_size=18,
             anchor_x="center"
         )
 
@@ -70,11 +90,22 @@ class GameOver(arcade.View):
         self.clear()
 
         arcade.draw_text(
-            "GAME OVER",
+            "Game Over",
             SCREEN_WIDTH/2,
             SCREEN_HEIGHT/2,
             arcade.color.BLACK,
-            font_size=30,
+            font_name="8-bit Arcade In",
+            font_size=48,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "Game Over",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT/2,
+            arcade.color.RED_DEVIL,
+            font_name="8-bit Arcade Out",
+            font_size=48,
             anchor_x="center"
         )
 
@@ -83,7 +114,8 @@ class GameOver(arcade.View):
             SCREEN_WIDTH/2,
             (SCREEN_HEIGHT/2)-34,
             arcade.color.BLACK,
-            font_size=20,
+            font_name="VCR OSD MONO",
+            font_size=18,
             anchor_x="center"
         )
 
@@ -152,7 +184,14 @@ class Game(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         
         # Player
-        self.player_sprite = Entitys.player.Player(health=PLAYER_LIFE, jump_speed=PLAYER_JUMP_SPEED)
+        self.player_sprite = Entitys.player.Player(
+            health=PLAYER_LIFE, 
+            jump_speed=PLAYER_JUMP_SPEED,
+            sound_jump=JUMP_SOUND,
+            sound_hit=HIT_SOUND,
+            sound_hurt=HURT_SOUND
+        )
+
         self.player_imortal_timer = 0
         self.player_sprite.center_x = (
             self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
@@ -265,6 +304,7 @@ class Game(arcade.View):
             else:
                 collectable.collision()
                 self.score += collectable.value
+            arcade.play_sound(COIN_SOUND)
 
 
         # Checa se o jogador chegou a uma porta
@@ -281,6 +321,7 @@ class Game(arcade.View):
         # Checa se o jogador morreu
         if self.player_sprite.health <= 0:
             # Troca para a tela de Game Over
+            arcade.play_sound(GAME_OVER)
             gameOver_view = GameOver()
             self.window.show_view(gameOver_view)
 
@@ -384,6 +425,17 @@ class Game(arcade.View):
         self.player_sprite.process_keychange(self.physics_engine.is_on_ladder(), self.physics_engine.can_jump(10))
 
 def main():
+    # Load font
+    arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade In.ttf")
+    arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade Out.ttf")
+    arcade.load_font("../projeto_plataforma/Utils/Fonts/VCR OSD MONO.ttf")
+
+    # Load sounds
+    """HURT_SOUND = arcade.load_sound(":resources:sounds/hurt3.wav")
+    HIT_SOUND = arcade.load_sound(":resources:sounds/hit1.wav")
+    JUMP_SOUND = arcade.load_sound(":resources:sounds/jump5.wav")
+    COIN_SOUND = arcade.load_sound(":resources:sounds/coin3.wav")"""
+
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
     mainMenu = MainMenu()
     window.show_view(mainMenu)

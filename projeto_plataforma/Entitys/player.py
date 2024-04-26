@@ -5,7 +5,17 @@ import Utils.enums as enums
 from Utils.enums import Direcitons as dir
 
 class Player(entity.Entity):
-    def __init__(self, health=1, imortal_time=30, speed_on_solid: int = 3, speed_on_water: int = 1, jump_speed: int = 6):
+    def __init__(
+            self,
+            sound_jump: arcade.Sound,
+            sound_hit: arcade.Sound,
+            sound_hurt: arcade.Sound,
+            health=1,
+            imortal_time=30, 
+            speed_on_solid: int = 3, 
+            speed_on_water: int = 1, 
+            jump_speed: int = 6
+        ):
         file_path = "../assets/Tiles/Characters/tile_0000.png"
         super().__init__(file_path, health)
 
@@ -26,6 +36,10 @@ class Player(entity.Entity):
         self.time_between_frame = 10
 
         self.has_key = False
+
+        self.sound_jump = sound_jump
+        self.sound_hurt = sound_hurt
+        self.sound_hit = sound_hit
 
         self.moving_animation = [
             self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png"),
@@ -52,16 +66,20 @@ class Player(entity.Entity):
                     self.change_y = self.jump_speed * 0.75
                     if not collision.spike_head:
                         collision.take_damage(1)
+                        arcade.play_sound(self.sound_hit)
                     else:
                         self.health -= 1
+                        arcade.play_sound(self.sound_hurt)
                 elif self.can_take_damge:
                     self.health -= 1
+                    arcade.play_sound(self.sound_hurt)
                     self.can_take_damge = False
 
             # Checa por colisão com espinhos
             if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
                 if self.change_y < 0 and self.can_take_damge:
                     self.health -= 1
+                    arcade.play_sound(self.sound_hurt)
                     self.can_take_damge = False
                 else:
                     self.can_take_damge = True
@@ -81,6 +99,7 @@ class Player(entity.Entity):
                 self.change_y = self.speed
             elif(can_jump and not self.jump_needs_reset):
                 self.change_y = self.jump_speed
+                arcade.play_sound(self.sound_jump)
                 self.jump_needs_reset = True
         elif self.down_pressed and not self.up_pressed:
             if on_ladder:

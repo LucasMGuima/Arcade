@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tiled/map_1.tmx",
+    "activeFile": "Tiled/nivel_01.tmx",
     "expandedProjectPaths": [
-        "Tiled",
         ".",
-        "Maps",
-        "Tilemap"
+        "Tiled",
+        "Tilemap",
+        "Maps"
     ],
     "fileStates": {
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/dirt.json": {
@@ -50,23 +50,23 @@
             "scale": 0.75,
             "selectedLayer": 9,
             "viewCenter": {
-                "x": 500.66666666666663,
-                "y": 196.66666666666669
+                "x": 539.3333333333333,
+                "y": 180.66666666666669
             }
         },
         "Tiled/nivel_01.tmx": {
-            "scale": 0.7934259259259259,
-            "selectedLayer": 8,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 270.34659820282417,
-                "y": 180.8612440191388
+                "x": 611,
+                "y": 427
             }
         },
         "Tiled/tilemap-example-a.tmx": {
             "scale": 1.774145299145299,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 233.91545224617607,
+                "x": 233.63362640009632,
                 "y": 134.99458027219077
             }
         },
@@ -96,7 +96,8 @@
     "openFiles": [
         "Tiled/tilemap-example-a.tmx",
         "Tiled/tileset-tiles.tsx",
-        "Tiled/map_1.tmx"
+        "Tiled/map_1.tmx",
+        "Tiled/nivel_01.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
@@ -104,6 +105,7 @@
         "Tiled/tilemap-example-a.tmx",
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx",
+        "Tiled/nivel_01.tmx",
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
         "Tiled/tilemap-example-b.tmx",
         "Tiled/map_1.json",
