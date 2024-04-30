@@ -1,8 +1,10 @@
 import arcade
 
 class Camera(arcade.Camera):
-    def __init__(self, viewport_width: int = 0, viewport_height: int = 0, window: arcade.Window = None):
+    def __init__(self, viewport_width: int = 0, viewport_height: int = 0, tile_map_width:int = 0, window: arcade.Window = None):
         super().__init__(viewport_width, viewport_height, window)
+
+        self.tile_map_width = tile_map_width*18
 
     def center_on_sprite(self, sprite: arcade.SpriteCircle) -> None:
         '''
@@ -15,8 +17,8 @@ class Camera(arcade.Camera):
         # Não deixa a camera sair do mapa
         if screen_center_x < 0:
             screen_center_x = 0
-        if screen_center_x > self.viewport_width:
-            screen_center_x = self.viewport_width
+        if screen_center_x > self.tile_map_width - self.viewport_width:
+            screen_center_x = self.tile_map_width - self.viewport_width
         if screen_center_y < 0:
             screen_center_y = 0
         sprite_centered = screen_center_x, screen_center_y

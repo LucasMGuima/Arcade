@@ -55,39 +55,51 @@ class Player(entity.Entity):
 
         self.speed = self._speed_on_solid
         for collision in collision_list:
-            if scene[enums.Layers.LAYER_NAME_AGUA] in collision.sprite_lists:
-                # Muda a velocidade do jogador se na agua
-                self.speed = self._speed_on_water
-                self.process_keychange(False, False)
+            try:
+                if scene[enums.Layers.LAYER_NAME_AGUA] in collision.sprite_lists:
+                    # Muda a velocidade do jogador se na agua
+                    self.speed = self._speed_on_water
+                    self.process_keychange(False, False)
+            except KeyError:
+                continue
 
             # Checa por colisão com um inimigo
-            if scene[enums.Layers.LAYER_NAME_ENEMY] in collision.sprite_lists:
-                if self.center_y > collision.center_y:
-                    self.change_y = self.jump_speed * 0.75
-                    if not collision.spike_head:
-                        collision.take_damage(1)
-                        arcade.play_sound(self.sound_hit)
-                    else:
+            try:
+                if scene[enums.Layers.LAYER_NAME_ENEMY] in collision.sprite_lists:
+                    if self.center_y > collision.center_y:
+                        self.change_y = self.jump_speed * 0.75
+                        if not collision.spike_head:
+                            collision.take_damage(1)
+                            arcade.play_sound(self.sound_hit, volume=0.5)
+                        else:
+                            self.health -= 1
+                            arcade.play_sound(self.sound_hurt, volume=0.5)
+                    elif self.can_take_damge:
                         self.health -= 1
-                        arcade.play_sound(self.sound_hurt)
-                elif self.can_take_damge:
-                    self.health -= 1
-                    arcade.play_sound(self.sound_hurt)
-                    self.can_take_damge = False
+                        arcade.play_sound(self.sound_hurt, volume=0.5)
+                        self.can_take_damge = False
+            except KeyError:
+                continue
 
             # Checa por colisão com espinhos
-            if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
-                if self.change_y < 0 and self.can_take_damge:
-                    self.health -= 1
-                    arcade.play_sound(self.sound_hurt)
-                    self.can_take_damge = False
-                else:
-                    self.can_take_damge = True
+            try:
+                if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
+                    if self.change_y < 0 and self.can_take_damge:
+                        self.health -= 1
+                        arcade.play_sound(self.sound_hurt, volume=0.5)
+                        self.can_take_damge = False
+                    else:
+                        self.can_take_damge = True
+            except:
+                continue
 
             # Checa por uma colisão com trampolins
-            if scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists:
-                if (self.center_y > collision.center_y) and self.change_y != 0:
-                    self.change_y = self.jump_speed * 1.5
+            try:
+                if scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists:
+                    if (self.center_y > collision.center_y) and self.change_y != 0:
+                        self.change_y = self.jump_speed * 1.5
+            except:
+                continue
 
     def process_keychange(self, on_ladder: bool, can_jump: bool) -> None:
         '''
@@ -99,7 +111,7 @@ class Player(entity.Entity):
                 self.change_y = self.speed
             elif(can_jump and not self.jump_needs_reset):
                 self.change_y = self.jump_speed
-                arcade.play_sound(self.sound_jump)
+                arcade.play_sound(self.sound_jump, volume=0.5)
                 self.jump_needs_reset = True
         elif self.down_pressed and not self.up_pressed:
             if on_ladder:

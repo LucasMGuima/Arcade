@@ -26,8 +26,8 @@ GRAVITY = 1
 PLAYER_JUMP_SPEED = 14
 
 # Player start
-PLAYER_START_X = 2
-PLAYER_START_Y = 4
+PLAYER_START_X = 5
+PLAYER_START_Y = 5
 
 PLAYER_LIFE = 5
 PLAYER_IMORTAL_TIME = 30
@@ -43,8 +43,6 @@ GAME_OVER = arcade.load_sound(":resources:sounds/gameover3.wav")
 class MainMenu(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.ASH_GREY)
-        arcade.play_sound(COIN_SOUND)
-
     def on_draw(self):
         self.clear()
 
@@ -144,6 +142,11 @@ class Game(arcade.View):
 
         self.physics_engine = None
 
+        #Spritslists para atualizar
+        self.spritLists_to_update = []
+        self.spritLists_to_collide = []
+        self.spritLists_to_animate = []
+
         # Set background color
         arcade.set_background_color(arcade.color.BLUE_GRAY)
 
@@ -151,12 +154,8 @@ class Game(arcade.View):
         # Reset score
         self.score = 0
 
-        # Configura as cameras
-        self.camera = camera.Camera(self.window.width, self.window.height)
-        self.gui_camera = camera.Camera(self.window.width, self.window.height)
-
         # Carrega o TileMap
-        map_name = "../assets/Tiled/map_1.tmx"
+        map_name = "../assets/Tiled/w1_l2.tmx"
 
         layer_options = {
             enums.Layers.LAYER_NAME_PLATAFORMS: {
@@ -183,6 +182,16 @@ class Game(arcade.View):
         # Carrega a scena
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         
+        # Carrega layers de colisão
+        if self.tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_ESPINHOS):
+            self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_ESPINHOS])
+        if self.tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_TRAMPOLINS):
+            self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS])
+
+        # Configura as cameras
+        self.camera = camera.Camera(self.window.width, self.window.height, self.tile_map.width)
+        self.gui_camera = camera.Camera(self.window.width, self.window.height)
+
         # Player
         self.player_sprite = Entitys.player.Player(
             health=PLAYER_LIFE, 
@@ -199,11 +208,20 @@ class Game(arcade.View):
         self.player_sprite.center_y = (
             self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
         )
-        self.scene.add_sprite_list_before(enums.Layers.LAYER_NAME_PLAYER, enums.Layers.LAYER_NAME_AGUA, False, self.player_sprite)
+        try:
+            self.scene.add_sprite_list_before(enums.Layers.LAYER_NAME_PLAYER, enums.Layers.LAYER_NAME_AGUA, False, self.player_sprite)
+            self.spritLists_to_update.append(enums.Layers.LAYER_NAME_AGUA)
+            self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_AGUA])
+        except:
+            self.scene.add_sprite_list(enums.Layers.LAYER_NAME_PLAYER, sprite_list=self.player_sprite)
+        self.spritLists_to_animate.append(enums.Layers.LAYER_NAME_PLAYER)
 
 
         # Enemies
-        enemies_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_ENEMY]
+        try:
+            enemies_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_ENEMY]        
+        except KeyError:
+            enemies_layer = []
 
         for object in enemies_layer:
             cartesian = self.tile_map.get_cartesian(
@@ -221,9 +239,17 @@ class Game(arcade.View):
                 enemy = Enemy.Drill(object, cartesian, tileMap_size)
 
             self.scene.add_sprite(enums.Layers.LAYER_NAME_ENEMY, enemy)
+        
+        if(len(enemies_layer) > 0):
+            self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_ENEMY])
+            self.spritLists_to_update.append(enums.Layers.LAYER_NAME_ENEMY) 
+            self.spritLists_to_animate.append(enums.Layers.LAYER_NAME_ENEMY)
 
         # Coletaveis
-        colletables_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_COLLETABLES]
+        try:
+            colletables_layer = self.tile_map.object_lists[enums.Layers.LAYER_NAME_COLLETABLES]
+        except KeyError:
+            colletables_layer = []
 
         for object in colletables_layer:
             cartesian = self.tile_map.get_cartesian(
@@ -233,7 +259,6 @@ class Game(arcade.View):
             colletable_type = object.type.lower()
             tileMap_size = (self.tile_map.tile_width, self.tile_map.tile_height)
 
-            #TODO: Separar a layer de coletaveis em coletaveis e containers
             if colletable_type == enums.ObjectTypes.COIN:
                 colletable = collect.Coin(cartesian, tileMap_size)
             elif colletable_type == enums.ObjectTypes.GEN:
@@ -242,14 +267,22 @@ class Game(arcade.View):
                 colletable = follower.Follower(cartesian, tileMap_size)
             
             self.scene.add_sprite(enums.Layers.LAYER_NAME_COLLETABLES, colletable)
+        
+        if(len(colletables_layer) > 0):
+            self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_COLLETABLES])
+            self.spritLists_to_update.append(enums.Layers.LAYER_NAME_COLLETABLES)
+            self.spritLists_to_animate.append(enums.Layers.LAYER_NAME_COLLETABLES)
 
         # Carrega o motor
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite,
-            walls=self.scene[enums.Layers.LAYER_NAME_PLATAFORMS],
-            ladders=self.scene[enums.Layers.LAYER_NAME_ESCADA],
-            gravity_constant=GRAVITY
-        )
+        try:
+            self.physics_engine = arcade.PhysicsEnginePlatformer(
+                self.player_sprite,
+                walls=self.scene[enums.Layers.LAYER_NAME_PLATAFORMS],
+                ladders=self.scene[enums.Layers.LAYER_NAME_ESCADA],
+                gravity_constant=GRAVITY
+            )
+        except:
+            print("-> Physics engine not load")
 
     def on_show_view(self):
         self.setup()
@@ -257,29 +290,28 @@ class Game(arcade.View):
     def on_update(self, delta_time: float):
         self.physics_engine.update()
 
+        # Mantem o jogador na tela
+        if self.player_sprite.center_x < 18 or self.player_sprite.center_x > ((self.tile_map.width*18)-18):
+            self.player_sprite.change_x = 0
+
         # Posiciona a camera
         self.camera.center_on_sprite(self.player_sprite)
 
         # Atualiza as layer da scena
-        self.scene.update([
-            enums.Layers.LAYER_NAME_ENEMY,
-            enums.Layers.LAYER_NAME_COLLETABLES
-        ])
+        self.scene.update(self.spritLists_to_update)
 
         # Atualiza os inimgos
-        for enemy in self.scene[enums.Layers.LAYER_NAME_ENEMY]:
-            # Atualiza a direção
-            enemy.update_direction()
+        try:
+            for enemy in self.scene[enums.Layers.LAYER_NAME_ENEMY]:
+                # Atualiza a direção
+                enemy.update_direction()
+        except:
+            pass
 
         # Player collision
         player_collision_list = arcade.check_for_collision_with_lists(
             self.player_sprite,
-            [
-                self.scene[enums.Layers.LAYER_NAME_AGUA],
-                self.scene[enums.Layers.LAYER_NAME_ENEMY],
-                self.scene[enums.Layers.LAYER_NAME_ESPINHOS],
-                self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS]
-            ]
+            self.spritLists_to_collide
         )
 
         # Timer de imortalidade pos dano do jogador
@@ -304,7 +336,7 @@ class Game(arcade.View):
             else:
                 collectable.collision()
                 self.score += collectable.value
-            arcade.play_sound(COIN_SOUND)
+            arcade.play_sound(COIN_SOUND, volume=0.5)
 
 
         # Checa se o jogador chegou a uma porta
@@ -328,11 +360,7 @@ class Game(arcade.View):
         # Atualiza as animações
         self.scene.update_animation(
             delta_time,
-            [
-                enums.Layers.LAYER_NAME_PLAYER,
-                enums.Layers.LAYER_NAME_ENEMY,
-                enums.Layers.LAYER_NAME_COLLETABLES
-            ]
+            self.spritLists_to_animate
         )
                 
 
@@ -429,12 +457,6 @@ def main():
     arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade In.ttf")
     arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade Out.ttf")
     arcade.load_font("../projeto_plataforma/Utils/Fonts/VCR OSD MONO.ttf")
-
-    # Load sounds
-    """HURT_SOUND = arcade.load_sound(":resources:sounds/hurt3.wav")
-    HIT_SOUND = arcade.load_sound(":resources:sounds/hit1.wav")
-    JUMP_SOUND = arcade.load_sound(":resources:sounds/jump5.wav")
-    COIN_SOUND = arcade.load_sound(":resources:sounds/coin3.wav")"""
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
     mainMenu = MainMenu()
