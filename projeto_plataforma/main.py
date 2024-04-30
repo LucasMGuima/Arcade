@@ -185,9 +185,10 @@ class Game(arcade.View):
         # Carrega layers de colisão
         if self.tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_ESPINHOS):
             self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_ESPINHOS])
+
         if self.tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_TRAMPOLINS):
             self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS])
-
+            
         # Configura as cameras
         self.camera = camera.Camera(self.window.width, self.window.height, self.tile_map.width)
         self.gui_camera = camera.Camera(self.window.width, self.window.height)
@@ -322,7 +323,7 @@ class Game(arcade.View):
                 self.player_imortal_timer = 0
 
         # Processa a colisão do jogador
-        self.player_sprite.process_colision(player_collision_list, self.scene)
+        self.player_sprite.process_colision(player_collision_list, self.scene, self.tile_map)
 
         # Colisão dos coletaveis
         collectabels_collision_list = arcade.check_for_collision_with_list(

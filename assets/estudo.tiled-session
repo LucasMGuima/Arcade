@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tiled/w1_l1.tmx",
+    "activeFile": "Tiled/w1_l2.tmx",
     "expandedProjectPaths": [
-        "Tiled",
         "Maps",
         ".",
+        "Tiled",
         "Tilemap"
     ],
     "fileStates": {
@@ -97,18 +97,29 @@
                 3
             ],
             "scale": 1.5,
-            "selectedLayer": 3,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 297.6666666666667,
-                "y": 270
+                "y": 150.66666666666666
             }
         },
         "Tiled/w1_l2.tmx": {
-            "scale": 0.8664351851851851,
-            "selectedLayer": 9,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 721.9235907026449,
-                "y": 358.9420251135453
+                "x": 257,
+                "y": 171.33333333333331
+            }
+        },
+        "Tiled/w1_l5.tmx": {
+            "scale": 0.8664351851851851,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 540.721346513492,
+                "y": 360.0961795351322
             }
         }
     },
@@ -122,7 +133,9 @@
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx",
         "Tiled/nivel_01.tmx",
-        "Tiled/w1_l1.tmx"
+        "Tiled/w1_l1.tmx",
+        "Tiled/w1_l5.tmx",
+        "Tiled/w1_l2.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
@@ -132,6 +145,8 @@
         "Tiled/map_1.tmx",
         "Tiled/nivel_01.tmx",
         "Tiled/w1_l1.tmx",
+        "Tiled/w1_l5.tmx",
+        "Tiled/w1_l2.tmx",
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
         "Tiled/tilemap-example-b.tmx",
         "Tiled/map_1.json",

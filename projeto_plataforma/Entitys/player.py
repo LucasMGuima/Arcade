@@ -48,58 +48,56 @@ class Player(entity.Entity):
 
         self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png")
 
-    def process_colision(self, collision_list: List[arcade.Sprite], scene: arcade.Scene) -> None:
+    def process_colision(self, collision_list: List[arcade.Sprite], scene: arcade.Scene, tile_map: arcade.TileMap) -> None:
         '''
             Processa a colisão do jogador com outros elementos
         '''
 
         self.speed = self._speed_on_solid
         for collision in collision_list:
-            try:
-                if scene[enums.Layers.LAYER_NAME_AGUA] in collision.sprite_lists:
-                    # Muda a velocidade do jogador se na agua
-                    self.speed = self._speed_on_water
-                    self.process_keychange(False, False)
-            except KeyError:
-                continue
+            if (tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_AGUA) and 
+                scene[enums.Layers.LAYER_NAME_AGUA] in collision.sprite_lists):
+
+                # Muda a velocidade do jogador se na agua
+                self.speed = self._speed_on_water
+                self.process_keychange(False, False)
+
 
             # Checa por colisão com um inimigo
-            try:
-                if scene[enums.Layers.LAYER_NAME_ENEMY] in collision.sprite_lists:
-                    if self.center_y > collision.center_y:
-                        self.change_y = self.jump_speed * 0.75
-                        if not collision.spike_head:
-                            collision.take_damage(1)
-                            arcade.play_sound(self.sound_hit, volume=0.5)
-                        else:
-                            self.health -= 1
-                            arcade.play_sound(self.sound_hurt, volume=0.5)
-                    elif self.can_take_damge:
+            if (tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_ENEMY) and 
+                scene[enums.Layers.LAYER_NAME_ENEMY] in collision.sprite_lists):
+
+                if self.center_y > collision.center_y:
+                    self.change_y = self.jump_speed * 0.75
+                    if not collision.spike_head:
+                        collision.take_damage(1)
+                        arcade.play_sound(self.sound_hit, volume=0.5)
+                    else:
                         self.health -= 1
                         arcade.play_sound(self.sound_hurt, volume=0.5)
-                        self.can_take_damge = False
-            except KeyError:
-                continue
+                elif self.can_take_damge:
+                    self.health -= 1
+                    arcade.play_sound(self.sound_hurt, volume=0.5)
+                    self.can_take_damge = False
+
 
             # Checa por colisão com espinhos
-            try:
-                if scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists:
-                    if self.change_y < 0 and self.can_take_damge:
-                        self.health -= 1
-                        arcade.play_sound(self.sound_hurt, volume=0.5)
-                        self.can_take_damge = False
-                    else:
-                        self.can_take_damge = True
-            except:
-                continue
+            if (tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_ESPINHOS) and
+                scene[enums.Layers.LAYER_NAME_ESPINHOS] in collision.sprite_lists):
+
+                if self.change_y < 0 and self.can_take_damge:
+                    self.health -= 1
+                    arcade.play_sound(self.sound_hurt, volume=0.5)
+                    self.can_take_damge = False
+                else:
+                    self.can_take_damge = True
 
             # Checa por uma colisão com trampolins
-            try:
-                if scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists:
-                    if (self.center_y > collision.center_y) and self.change_y != 0:
-                        self.change_y = self.jump_speed * 1.5
-            except:
-                continue
+            if (tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_TRAMPOLINS) and
+                scene[enums.Layers.LAYER_NAME_TRAMPOLINS] in collision.sprite_lists):
+
+                if (self.center_y > collision.center_y) and self.change_y != 0:
+                    self.change_y = self.jump_speed * 1.5
 
     def process_keychange(self, on_ladder: bool, can_jump: bool) -> None:
         '''
