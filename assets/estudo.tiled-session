@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tiled/w1_l2.tmx",
+    "activeFile": "Tiled/w1_l4.tmx",
     "expandedProjectPaths": [
         "Maps",
         ".",
@@ -45,14 +45,14 @@
         },
         "Tiled/map_1.tmx": {
             "expandedObjectLayers": [
-                6,
-                8
+                8,
+                6
             ],
             "scale": 0.75,
             "selectedLayer": 9,
             "viewCenter": {
-                "x": 586.6666666666667,
-                "y": 180.66666666666669
+                "x": 586,
+                "y": 178.66666666666669
             }
         },
         "Tiled/nivel_01.tmx": {
@@ -71,8 +71,8 @@
             "scale": 1.774145299145299,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 233.63362640009632,
-                "y": 134.99458027219075
+                "x": 233.06997470793686,
+                "y": 134.71275442611102
             }
         },
         "Tiled/tilemap-example-b.tmx": {
@@ -99,8 +99,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 297.6666666666667,
-                "y": 150.66666666666666
+                "x": 295.66666666666663,
+                "y": 148
             }
         },
         "Tiled/w1_l2.tmx": {
@@ -108,18 +108,40 @@
                 3
             ],
             "scale": 1.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 254.33333333333331,
+                "y": 168
+            }
+        },
+        "Tiled/w1_l3.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 257,
-                "y": 171.33333333333331
+                "x": 461.5,
+                "y": 114
+            }
+        },
+        "Tiled/w1_l4.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 221.5,
+                "y": 164
             }
         },
         "Tiled/w1_l5.tmx": {
+            "expandedObjectLayers": [
+                10
+            ],
             "scale": 0.8664351851851851,
-            "selectedLayer": 3,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 540.721346513492,
-                "y": 360.0961795351322
+                "x": 536.104728827144,
+                "y": 355.47956184878433
             }
         }
     },
@@ -129,27 +151,26 @@
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "openFiles": [
-        "Tiled/tilemap-example-a.tmx",
-        "Tiled/tileset-tiles.tsx",
-        "Tiled/map_1.tmx",
-        "Tiled/nivel_01.tmx",
-        "Tiled/w1_l1.tmx",
+        "Tiled/w1_l3.tmx",
         "Tiled/w1_l5.tmx",
-        "Tiled/w1_l2.tmx"
+        "Tiled/w1_l1.tmx",
+        "Tiled/w1_l2.tmx",
+        "Tiled/w1_l4.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "Tiled/w1_l3.tmx",
+        "Tiled/w1_l5.tmx",
+        "Tiled/w1_l1.tmx",
+        "Tiled/w1_l2.tmx",
+        "Tiled/w1_l4.tmx",
         "Tiled/tilemap-example-a.tmx",
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx",
         "Tiled/nivel_01.tmx",
-        "Tiled/w1_l1.tmx",
-        "Tiled/w1_l5.tmx",
-        "Tiled/w1_l2.tmx",
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
         "Tiled/tilemap-example-b.tmx",
-        "Tiled/map_1.json",
-        "Tiled/tileset-characters.tsx"
+        "Tiled/map_1.json"
     ]
 }

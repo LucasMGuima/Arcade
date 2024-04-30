@@ -154,8 +154,13 @@ class Game(arcade.View):
         # Reset score
         self.score = 0
 
+        #Reinicia as listas
+        self.spritLists_to_update = []
+        self.spritLists_to_collide = []
+        self.spritLists_to_animate = []
+
         # Carrega o TileMap
-        map_name = "../assets/Tiled/w1_l2.tmx"
+        map_name = "../assets/Tiled/w1_l3.tmx"
 
         layer_options = {
             enums.Layers.LAYER_NAME_PLATAFORMS: {
@@ -188,7 +193,7 @@ class Game(arcade.View):
 
         if self.tile_map.get_tilemap_layer(enums.Layers.LAYER_NAME_TRAMPOLINS):
             self.spritLists_to_collide.append(self.scene[enums.Layers.LAYER_NAME_TRAMPOLINS])
-            
+
         # Configura as cameras
         self.camera = camera.Camera(self.window.width, self.window.height, self.tile_map.width)
         self.gui_camera = camera.Camera(self.window.width, self.window.height)
