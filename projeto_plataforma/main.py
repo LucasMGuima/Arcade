@@ -1,11 +1,13 @@
 import arcade
 import arcade.color
-import Entitys.Enemys.enemy as Enemy
-import Entitys.player
-import Entitys.colletable as collect
-import Entitys.follower as follower
-import Utils.camera as camera
-import Utils.enums as enums
+import resources.Entitys.Enemys
+import resources.Entitys.Enemys.enemy as Enemy
+import resources.Entitys.Enemys.enemy
+import resources.Entitys.player
+import resources.Entitys.colletable as collect
+import resources.Entitys.follower as follower
+import resources.Utils.camera as camera
+import resources.Utils.enums as enums
 
 # Constantes
 SCREEN_WIDTH = 540
@@ -142,21 +144,26 @@ class Game(arcade.View):
 
         self.physics_engine = None
 
+        # Mantem qual o mundo e nivel atual
+        self.nivel = 1
+        self.word = 1
+
+        # Mantem um novo um jogo
+        self.new_game = True
+
         #Spritslists para atualizar
         self.spritLists_to_update = []
         self.spritLists_to_collide = []
         self.spritLists_to_animate = []
 
-        # Mantem qual o mundo e nivel atual
-        self.nivel = 1
-        self.word = 1
-
         # Set background color
         arcade.set_background_color(arcade.color.BLUE_GRAY)
 
     def setup(self):
-        # Reset score
-        self.score = 0
+        # Reinicia o score se for um novo jogo
+        if(self.new_game):
+            self.score = 0
+            self.new_game = False
 
         #Reinicia as listas
         self.spritLists_to_update = []
@@ -187,7 +194,12 @@ class Game(arcade.View):
             }
         }
 
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        try:
+            self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        except:
+            map_name = f"./_internal/maps/w{self.word}_l{self.nivel}.tmx"
+            self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+            
         # Carrega a scena
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
         
@@ -203,7 +215,7 @@ class Game(arcade.View):
         self.gui_camera = camera.Camera(self.window.width, self.window.height)
 
         # Player
-        self.player_sprite = Entitys.player.Player(
+        self.player_sprite = resources.Entitys.player.Player(
             health=PLAYER_LIFE, 
             jump_speed=PLAYER_JUMP_SPEED,
             sound_jump=JUMP_SOUND,
@@ -242,11 +254,11 @@ class Game(arcade.View):
             tileMap_size = (self.tile_map.tile_width, self.tile_map.tile_height)
 
             if enemy_type == "flying":
-                enemy = Enemy.Flying(object, cartesian, tileMap_size)
+                enemy = resources.Entitys.Enemys.enemy.Flying(object, cartesian, tileMap_size)
             elif enemy_type == "stomping":
-                enemy = Enemy.Stomping(object, cartesian, tileMap_size)
+                enemy = resources.Entitys.Enemys.enemy.Stomping(object, cartesian, tileMap_size)
             elif enemy_type == "drill":
-                enemy = Enemy.Drill(object, cartesian, tileMap_size)
+                enemy = resources.Entitys.Enemys.enemy.Drill(object, cartesian, tileMap_size)
 
             self.scene.add_sprite(enums.Layers.LAYER_NAME_ENEMY, enemy)
         
@@ -359,11 +371,17 @@ class Game(arcade.View):
             # Se o jogador tiver uma chave vai pro próximo nivel
             if self.player_sprite.has_key:
                 self.nivel += 1
-                self.setup()
+                if(self.nivel >= 6):
+                    self.new_game = True
+                    gameOver_view = GameOver()
+                    self.window.show_view(gameOver_view)
+                else:
+                    self.setup()
 
         # Checa se o jogador morreu
         if self.player_sprite.health <= 0:
             # Troca para a tela de Game Over
+            self.new_game = True
             arcade.play_sound(GAME_OVER)
             gameOver_view = GameOver()
             self.window.show_view(gameOver_view)
@@ -441,7 +459,7 @@ class Game(arcade.View):
         if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.up_pressed = True
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_spritedown_pressed = True
+            self.player_sprite.down_pressed = True
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.right_pressed = True
         elif key == arcade.key.LEFT or key == arcade.key.A:
@@ -465,9 +483,14 @@ class Game(arcade.View):
 
 def main():
     # Load font
-    arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade In.ttf")
-    arcade.load_font("../projeto_plataforma/Utils/Fonts/8-bit Arcade Out.ttf")
-    arcade.load_font("../projeto_plataforma/Utils/Fonts/VCR OSD MONO.ttf")
+    try:
+        arcade.load_font("./resources/Utils/Fonts/8-bit Arcade In.ttf")
+        arcade.load_font("./resources/Utils/Fonts/8-bit Arcade Out.ttf")
+        arcade.load_font("./resources/Utils/Fonts/VCR OSD MONO.ttf")
+    except:
+        arcade.load_font("./_internal/resources/Utils/Fonts/8-bit Arcade In.ttf")
+        arcade.load_font("./_internal/resources/Utils/Fonts/8-bit Arcade Out.ttf")
+        arcade.load_font("./_internal/resources/Utils/Fonts/VCR OSD MONO.ttf")
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
     mainMenu = MainMenu()
