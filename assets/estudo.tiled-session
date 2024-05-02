@@ -6,9 +6,9 @@
     "activeFile": "Tiled/w1_l4.tmx",
     "expandedProjectPaths": [
         "Maps",
+        "Tilemap",
         ".",
-        "Tiled",
-        "Tilemap"
+        "Tiled"
     ],
     "fileStates": {
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/dirt.json": {
@@ -89,7 +89,7 @@
             "scaleInEditor": 1
         },
         "Tiled/tileset-tiles.tsx": {
-            "scaleInDock": 2,
+            "scaleInDock": 1,
             "scaleInEditor": 3
         },
         "Tiled/w1_l1.tmx": {
@@ -99,8 +99,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 295.66666666666663,
-                "y": 148
+                "x": 269.66666666666663,
+                "y": 180.33333333333334
             }
         },
         "Tiled/w1_l2.tmx": {
@@ -110,8 +110,8 @@
             "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 254.33333333333331,
-                "y": 168
+                "x": 269.66666666666663,
+                "y": 180.33333333333334
             }
         },
         "Tiled/w1_l3.tmx": {
@@ -121,16 +121,19 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 461.5,
-                "y": 114
+                "x": 538.5,
+                "y": 178.5
             }
         },
         "Tiled/w1_l4.tmx": {
-            "scale": 1,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 221.5,
-                "y": 164
+                "x": 296.66666666666663,
+                "y": 363.33333333333326
             }
         },
         "Tiled/w1_l5.tmx": {
@@ -138,10 +141,10 @@
                 10
             ],
             "scale": 0.8664351851851851,
-            "selectedLayer": 9,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 536.104728827144,
-                "y": 355.47956184878433
+                "x": 537.258883248731,
+                "y": 357.21079348116484
             }
         }
     },
@@ -151,20 +154,16 @@
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "openFiles": [
-        "Tiled/w1_l3.tmx",
-        "Tiled/w1_l5.tmx",
-        "Tiled/w1_l1.tmx",
-        "Tiled/w1_l2.tmx",
         "Tiled/w1_l4.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "Tiled/w1_l3.tmx",
-        "Tiled/w1_l5.tmx",
-        "Tiled/w1_l1.tmx",
-        "Tiled/w1_l2.tmx",
         "Tiled/w1_l4.tmx",
+        "Tiled/w1_l5.tmx",
+        "Tiled/w1_l3.tmx",
+        "Tiled/w1_l2.tmx",
+        "Tiled/w1_l1.tmx",
         "Tiled/tilemap-example-a.tmx",
         "Tiled/tileset-tiles.tsx",
         "Tiled/map_1.tmx",

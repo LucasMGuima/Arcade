@@ -147,6 +147,10 @@ class Game(arcade.View):
         self.spritLists_to_collide = []
         self.spritLists_to_animate = []
 
+        # Mantem qual o mundo e nivel atual
+        self.nivel = 1
+        self.word = 1
+
         # Set background color
         arcade.set_background_color(arcade.color.BLUE_GRAY)
 
@@ -160,7 +164,7 @@ class Game(arcade.View):
         self.spritLists_to_animate = []
 
         # Carrega o TileMap
-        map_name = "../assets/Tiled/w1_l3.tmx"
+        map_name = f"../assets/Tiled/w{self.word}_l{self.nivel}.tmx"
 
         layer_options = {
             enums.Layers.LAYER_NAME_PLATAFORMS: {
@@ -354,6 +358,7 @@ class Game(arcade.View):
         for door in door_collision:
             # Se o jogador tiver uma chave vai pro próximo nivel
             if self.player_sprite.has_key:
+                self.nivel += 1
                 self.setup()
 
         # Checa se o jogador morreu
