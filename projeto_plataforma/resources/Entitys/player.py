@@ -16,7 +16,7 @@ class Player(entity.Entity):
             speed_on_water: int = 1, 
             jump_speed: int = 6
         ):
-        file_path = "../assets/Tiles/Characters/tile_0000.png"
+        file_path = "resources/Imagens/characters/tile_0000.png"
         super().__init__(file_path, health)
 
         self._speed_on_solid = speed_on_solid
@@ -42,11 +42,11 @@ class Player(entity.Entity):
         self.sound_hit = sound_hit
 
         self.moving_animation = [
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png"),
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0001.png")
+            self.load_texture_pair("resources/Imagens/characters/tile_0000.png"),
+            self.load_texture_pair("resources/Imagens/characters/tile_0001.png")
         ]
 
-        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0000.png")
+        self.idle_animation = self.load_texture_pair("resources/Imagens/characters/tile_0000.png")
 
     def process_colision(self, collision_list: List[arcade.Sprite], scene: arcade.Scene, tile_map: arcade.TileMap) -> None:
         '''

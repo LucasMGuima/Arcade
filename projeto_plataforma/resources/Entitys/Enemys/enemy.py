@@ -51,42 +51,42 @@ class Enemy(entity.Entity):
 
 class Flying(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
-        file_path = "../assets/Tiles/Characters/tile_0024.png"
+        file_path = "resources/Imagens/characters/tile_0024.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
 
         self.moving_animation = [
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0024.png"),
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0025.png"),
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0026.png")
+            self.load_texture_pair("resources/Imagens/characters/tile_0024.png"),
+            self.load_texture_pair("resources/Imagens/characters/tile_0025.png"),
+            self.load_texture_pair("resources/Imagens/characters/tile_0026.png")
         ]
 
         self.health = 1
 
 class Drill(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
-        file_path = "../assets/Tiles/Characters/tile_0015.png"
+        file_path = "resources/Imagens/characters/tile_0015.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
 
         self.moving_animation = [
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0015.png"),
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0016.png")
+            self.load_texture_pair("resources/Imagens/characters/tile_0015.png"),
+            self.load_texture_pair("resources/Imagens/characters/tile_0016.png")
         ]
 
-        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0017.png")
+        self.idle_animation = self.load_texture_pair("resources/Imagens/characters/tile_0017.png")
 
         self.health = 2
         self.spike_head = True
 
 class Stomping(Enemy):
     def __init__(self, object: arcade.TiledObject, cartesian: tuple, tileMap_size: tuple):
-        file_path = "../assets/Tiles/Characters/tile_0021.png"
+        file_path = "resources/Imagens/characters/tile_0021.png"
         super().__init__(file_path, object, cartesian, tileMap_size)
 
         self.moving_animation = [
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0021.png"),
-            self.load_texture_pair("../assets/Tiles/Characters/tile_0022.png")
+            self.load_texture_pair("resources/Imagens/characters/tile_0021.png"),
+            self.load_texture_pair("resources/Imagens/characters/tile_0022.png")
         ]
 
-        self.idle_animation = self.load_texture_pair("../assets/Tiles/Characters/tile_0023.png")
+        self.idle_animation = self.load_texture_pair("resources/Imagens/characters/tile_0023.png")
 
         self.health = 4

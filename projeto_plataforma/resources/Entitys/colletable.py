@@ -45,12 +45,12 @@ class ScoreCollectable(Colletable):
 
 class Coin(ScoreCollectable):
     def __init__(self, cartesian: tuple, tileMap_size: tuple):
-        super().__init__("../assets/Tiles/tile_0151.png", cartesian, tileMap_size)
+        super().__init__("resources/Imagens/tile_0151.png", cartesian, tileMap_size)
         self.value = 1
 
         self.animation = [
-            arcade.load_texture("../assets/Tiles/tile_0151.png"),
-            arcade.load_texture("../assets/Tiles/tile_0152.png")
+            arcade.load_texture("resources/Imagens/tile_0151.png"),
+            arcade.load_texture("resources/Imagens/tile_0152.png")
         ]
     
     def update_animation(self, delta_time: float = 1 / 60):
@@ -66,5 +66,5 @@ class Coin(ScoreCollectable):
 
 class Gen(ScoreCollectable):
     def __init__(self, cartesian: tuple, tileMap_size: tuple):
-        super().__init__("../assets/Tiles/tile_0067.png", cartesian, tileMap_size)
+        super().__init__("resources/Imagens/tile_0067.png", cartesian, tileMap_size)
         self.value = 5

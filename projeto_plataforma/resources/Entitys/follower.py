@@ -9,7 +9,7 @@ class Follower(arcade.Sprite):
         self.fallowing = False
 
         # Carrega a textura
-        self.texture = arcade.load_texture("../assets/Tiles/tile_0027.png")
+        self.texture = arcade.load_texture("resources/Imagens/tile_0027.png")
 
         # Corrige a posição do sprite
         self.center_x = math.floor(

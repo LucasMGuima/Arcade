@@ -1,5 +1,4 @@
 import arcade
-import arcade.color
 import resources.Entitys.Enemys
 import resources.Entitys.Enemys.enemy as Enemy
 import resources.Entitys.Enemys.enemy
@@ -171,7 +170,7 @@ class Game(arcade.View):
         self.spritLists_to_animate = []
 
         # Carrega o TileMap
-        map_name = f"../assets/Tiled/w{self.word}_l{self.nivel}.tmx"
+        map_name = f"resources/Maps/w{self.word}_l{self.nivel}.tmx"
 
         layer_options = {
             enums.Layers.LAYER_NAME_PLATAFORMS: {
@@ -197,7 +196,7 @@ class Game(arcade.View):
         try:
             self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         except:
-            map_name = f"./_internal/maps/w{self.word}_l{self.nivel}.tmx"
+            map_name = f"resources/Maps/w{self.word}_l{self.nivel}.tmx"
             self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
             
         # Carrega a scena
@@ -417,7 +416,7 @@ class Game(arcade.View):
         pos_num = 0
         for num in score_text:
             arcade.draw_texture_rectangle(
-                texture = arcade.load_texture(f"../assets/Tiles/tile_016{num}.png"),
+                texture = arcade.load_texture(f"resources/Imagens/numbers/tile_016{num}.png"),
                 center_x = 10 * (pos_num+1),
                 center_y = SCREEN_HEIGHT - 34,
                 width=18,
@@ -436,7 +435,7 @@ class Game(arcade.View):
             arcade.draw_texture_rectangle(
                 center_x = 18 * (heart+1),
                 center_y = SCREEN_HEIGHT - 18,
-                texture = arcade.load_texture("../assets/Tiles/tile_0044.png"),
+                texture = arcade.load_texture("resources/Imagens/UI/tile_0044.png"),
                 width=18,
                 height=18
             )
@@ -446,7 +445,7 @@ class Game(arcade.View):
             arcade.draw_texture_rectangle(
                 center_x = 18 * (heart+qtd_full_heart+1),
                 center_y = SCREEN_HEIGHT - 18,
-                texture = arcade.load_texture("../assets/Tiles/tile_0045.png"),
+                texture = arcade.load_texture("resources/Imagens/UI/tile_0045.png"),
                 width=18,
                 height=18
             )
@@ -488,9 +487,9 @@ def main():
         arcade.load_font("./resources/Utils/Fonts/8-bit Arcade Out.ttf")
         arcade.load_font("./resources/Utils/Fonts/VCR OSD MONO.ttf")
     except:
-        arcade.load_font("./_internal/resources/Utils/Fonts/8-bit Arcade In.ttf")
-        arcade.load_font("./_internal/resources/Utils/Fonts/8-bit Arcade Out.ttf")
-        arcade.load_font("./_internal/resources/Utils/Fonts/VCR OSD MONO.ttf")
+        arcade.load_font("Utils/Fonts/8-bit Arcade In.ttf")
+        arcade.load_font("Utils/Fonts/8-bit Arcade Out.ttf")
+        arcade.load_font("Utils/Fonts/VCR OSD MONO.ttf")
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_NAME)
     mainMenu = MainMenu()
