@@ -5,10 +5,10 @@
     },
     "activeFile": "Tiled/w1_l8.tmx",
     "expandedProjectPaths": [
-        ".",
-        "Tiled",
         "Maps",
-        "Tilemap"
+        "Tilemap",
+        "Tiled",
+        "."
     ],
     "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
@@ -263,10 +263,10 @@
                 10
             ],
             "scale": 0.33,
-            "selectedLayer": 7,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 628.7878787878789,
-                "y": 60.60606060606051
+                "x": 1271.2121212121212,
+                "y": 500
             }
         },
         "Tiled/w1_l9.tmx": {
@@ -290,12 +290,14 @@
     "openFiles": [
         "Tiled/w1_l6.tmx",
         "Tiled/w1_l7.tmx",
-        "Tiled/w1_l8.tmx",
-        "Tiled/w1_l9.tmx"
+        "Tiled/w1_l8.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "Tiled/w1_l6.tmx",
+        "Tiled/w1_l7.tmx",
+        "Tiled/w1_l8.tmx",
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l9.tmx",
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l8.tmx",
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l7.tmx",
@@ -304,9 +306,6 @@
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l4.tmx",
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l3.tmx",
         "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l2.tmx",
-        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l1.tmx",
-        "Tiled/w1_l3.tmx",
-        "Tiled/w1_l9.tmx",
-        "Tiled/w1_l8.tmx"
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l1.tmx"
     ]
 }

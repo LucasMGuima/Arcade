@@ -315,6 +315,19 @@ class Game(arcade.View):
         if self.player_sprite.center_x < 18 or self.player_sprite.center_x > ((self.tile_map.width*18)-18):
             self.player_sprite.change_x = 0
 
+        # Ve se o jogador caiu da tela
+        if self.player_sprite.center_y < 0:
+            # se sim aplica dano e reposiciona o jogador
+            self.player_sprite.health -= 1
+            self.player_sprite.center_x = (
+                self.tile_map.tile_width * TILE_SCALING * PLAYER_START_X
+            )
+            self.player_sprite.center_y = (
+                self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
+            )
+            # toca som de dano
+            arcade.play_sound(HIT_SOUND)
+
         # Posiciona a camera
         self.camera.center_on_sprite(self.player_sprite)
 
