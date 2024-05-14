@@ -11,7 +11,7 @@ import resources.Utils.enums as enums
 # Constantes
 SCREEN_WIDTH = 540
 SCREEN_HEIGHT = 360
-SCREEN_NAME = "Projeto Plataforma"
+SCREEN_NAME = "TinyJumper"
 
 # Constanres usadas para escalhonar os sprites de seu tamanho original
 TILE_SCALING = 1
@@ -30,7 +30,7 @@ PLAYER_JUMP_SPEED = 14
 PLAYER_START_X = 5
 PLAYER_START_Y = 5
 
-PLAYER_LIFE = 5
+PLAYER_LIFE = 6
 PLAYER_IMORTAL_TIME = 30
 
 # Sons
@@ -219,7 +219,7 @@ class Game(arcade.View):
             jump_speed=PLAYER_JUMP_SPEED,
             sound_jump=JUMP_SOUND,
             sound_hit=HIT_SOUND,
-            sound_hurt=HURT_SOUND
+            sound_hurt=HURT_SOUND,
         )
 
         self.player_imortal_timer = 0
@@ -370,7 +370,7 @@ class Game(arcade.View):
             # Se o jogador tiver uma chave vai pro próximo nivel
             if self.player_sprite.has_key:
                 self.nivel += 1
-                if(self.nivel >= 6):
+                if(self.nivel >= 10):
                     self.new_game = True
                     gameOver_view = GameOver()
                     self.window.show_view(gameOver_view)

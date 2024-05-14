@@ -3,13 +3,14 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tiled/w1_l1.tmx",
+    "activeFile": "Tiled/w1_l8.tmx",
     "expandedProjectPaths": [
-        "Maps",
-        "Tilemap",
+        ".",
         "Tiled",
-        "."
+        "Maps",
+        "Tilemap"
     ],
+    "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/dirt.json": {
             "scaleInDock": 1
@@ -34,6 +35,81 @@
         },
         "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/more_tiles.json": {
             "scaleInDock": 1
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/tileset-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l1.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 270.5,
+                "y": 180
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l2.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 270.5,
+                "y": 180
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l3.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 539.5,
+                "y": 180
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l4.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 270.5,
+                "y": 360
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l5.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 539.5,
+                "y": 360
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l6.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 539.5,
+                "y": 360
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l7.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 270.5,
+                "y": 540
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l8.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1079.5,
+                "y": 360
+            }
+        },
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l9.tmx": {
+            "scale": 0.5565123456790123,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 811.3027563640399,
+                "y": 361.1779712716988
+            }
         },
         "Tiled/map_1.json": {
             "scale": 1.393333333333333,
@@ -99,8 +175,16 @@
             "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 268.3333333333333,
-                "y": 178
+                "x": 269.66666666666663,
+                "y": 179.66666666666663
+            }
+        },
+        "Tiled/w1_l10.tmx": {
+            "scale": 0.8347685185185184,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 539.67056735622,
+                "y": 358.18312905551556
             }
         },
         "Tiled/w1_l2.tmx": {
@@ -110,20 +194,20 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 267.66666666666663,
-                "y": 178
+                "x": 269.66666666666663,
+                "y": 180.33333333333334
             }
         },
         "Tiled/w1_l3.tmx": {
             "expandedObjectLayers": [
-                9,
-                3
+                3,
+                9
             ],
             "scale": 1,
-            "selectedLayer": 6,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 595.5,
-                "y": 159
+                "x": 537.5,
+                "y": 179
             }
         },
         "Tiled/w1_l4.tmx": {
@@ -134,8 +218,8 @@
             "scale": 1,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 312.5,
-                "y": 358
+                "x": 267.5,
+                "y": 357
             }
         },
         "Tiled/w1_l5.tmx": {
@@ -146,8 +230,55 @@
             "scale": 0.8664351851851851,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 771.5522308308844,
-                "y": 354.3254074271975
+                "x": 484.1677798557307,
+                "y": 323.16323804434955
+            }
+        },
+        "Tiled/w1_l6.tmx": {
+            "expandedObjectLayers": [
+                9,
+                10
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 547.5,
+                "y": 327
+            }
+        },
+        "Tiled/w1_l7.tmx": {
+            "expandedObjectLayers": [
+                9,
+                10
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 339.5,
+                "y": 571
+            }
+        },
+        "Tiled/w1_l8.tmx": {
+            "expandedObjectLayers": [
+                10
+            ],
+            "scale": 0.33,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 628.7878787878789,
+                "y": 60.60606060606051
+            }
+        },
+        "Tiled/w1_l9.tmx": {
+            "expandedObjectLayers": [
+                9,
+                10
+            ],
+            "scale": 0.5,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 813,
+                "y": 326
             }
         }
     },
@@ -157,26 +288,25 @@
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "openFiles": [
-        "Tiled/w1_l1.tmx",
-        "Tiled/w1_l2.tmx",
-        "Tiled/w1_l3.tmx",
-        "Tiled/w1_l4.tmx",
-        "Tiled/w1_l5.tmx"
+        "Tiled/w1_l6.tmx",
+        "Tiled/w1_l7.tmx",
+        "Tiled/w1_l8.tmx",
+        "Tiled/w1_l9.tmx"
     ],
     "project": "estudo.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "Tiled/w1_l5.tmx",
-        "Tiled/w1_l4.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l9.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l8.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l7.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l6.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l5.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l4.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l3.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l2.tmx",
+        "E:/Codigos/FrozenLake/Arcade/projeto_plataforma/resources/Maps/w1_l1.tmx",
         "Tiled/w1_l3.tmx",
-        "Tiled/w1_l2.tmx",
-        "Tiled/w1_l1.tmx",
-        "Tiled/tilemap-example-a.tmx",
-        "Tiled/tileset-tiles.tsx",
-        "Tiled/map_1.tmx",
-        "Tiled/nivel_01.tmx",
-        "C:/Users/Lucas/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/site-packages/arcade/resources/tiled_maps/map_with_ladders.json",
-        "Tiled/tilemap-example-b.tmx",
-        "Tiled/map_1.json"
+        "Tiled/w1_l9.tmx",
+        "Tiled/w1_l8.tmx"
     ]
 }
