@@ -1,4 +1,4 @@
-import arcade
+import arcade, arcade.gui
 import resources.Entitys.Enemys
 import resources.Entitys.Enemys.enemy as Enemy
 import resources.Entitys.Enemys.enemy
@@ -40,46 +40,70 @@ JUMP_SOUND = arcade.load_sound(":resources:sounds/jump5.wav")
 COIN_SOUND = arcade.load_sound(":resources:sounds/coin3.wav")
 GAME_OVER = arcade.load_sound(":resources:sounds/gameover3.wav")
 
+#-- Buttons --
+class QuitButton(arcade.gui.UIFlatButton):
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        arcade.exit()
+
+class StartButton(arcade.gui.UIFlatButton):
+    def __init__(self, window: arcade.View, x: float = 0, y: float = 0, width: float = 100, height: float = 50, text="", size_hint=None, size_hint_min=None, size_hint_max=None, style=None, **kwargs):
+        super().__init__(x, y, width, height, text, size_hint, size_hint_min, size_hint_max, style, **kwargs)
+
+        self.window = window
+
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        game_view = Game()
+        self.window.show_view(game_view)
+
 #-- Menus --
-class MainMenu(arcade.View):
+class MainMenu(arcade.View):    
     def on_show_view(self):
+        # UIManager cuida da UI
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
         arcade.set_background_color(arcade.color.ASH_GREY)
+
+        # Caixa para alinhar os botões
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        # Criar os botoes
+        start_button = StartButton(self.window, text="Start", width=200)
+        self.v_box.add(start_button)
+        quit_button = QuitButton(text="Sair", width=200)
+        self.v_box.add(quit_button)
+
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box)
+        )
+
     def on_draw(self):
         self.clear()
 
         arcade.draw_text(
             "Tiny Jumper",
             SCREEN_WIDTH/2,
-            SCREEN_HEIGHT/2,
+            SCREEN_HEIGHT/2+64,
             arcade.color.BLUE_VIOLET,
             font_name="8-bit Arcade In",
             font_size=48,
             anchor_x="center"
         )
-
         arcade.draw_text(
             "Tiny Jumper",
             SCREEN_WIDTH/2,
-            SCREEN_HEIGHT/2,
+            SCREEN_HEIGHT/2+64,
             arcade.color.BLACK,
             font_name="8-bit Arcade Out",
             font_size=48,
             anchor_x="center"
         )
 
-        arcade.draw_text(
-            "- Click to play -",
-            SCREEN_WIDTH/2,
-            (SCREEN_HEIGHT/2)-34,
-            arcade.color.BLACK,
-            font_name="VCR OSD MONO",
-            font_size=18,
-            anchor_x="center"
-        )
-
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        game_view = Game()
-        self.window.show_view(game_view)
+        self.manager.draw()
 
 class GameOver(arcade.View):
     def on_show_view(self):
