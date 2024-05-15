@@ -1,3 +1,4 @@
+import arcade.color
 import arcade, arcade.gui
 import resources.Entitys.Enemys
 import resources.Entitys.Enemys.enemy as Enemy
@@ -34,6 +35,7 @@ PLAYER_LIFE = 6
 PLAYER_IMORTAL_TIME = 30
 
 # Sons
+SOUND_VOL = 0.05
 HURT_SOUND = arcade.load_sound(":resources:sounds/hurt3.wav")
 HIT_SOUND = arcade.load_sound(":resources:sounds/hit4.wav")
 JUMP_SOUND = arcade.load_sound(":resources:sounds/jump5.wav")
@@ -64,20 +66,36 @@ class MainMenu(arcade.View):
 
         arcade.set_background_color(arcade.color.ASH_GREY)
 
+        #Stilo do button
+        btn_style = {
+            "font_name": "VCR OSD MONO",
+            "font_size": 16,
+            "font_color": arcade.color.BLACK,
+            "border_width": 4,
+            "border_color": None,
+            "bg_color": arcade.color.PURPLE_NAVY,
+
+            #Se o botão for precionado
+            "bg_color_pressed": arcade.color.WHITE,
+            "border_color_pressed": arcade.color.PURPLE,
+            "font_color_pressed": arcade.color.BLACK,
+        }
+
         # Caixa para alinhar os botões
         self.v_box = arcade.gui.UIBoxLayout()
 
         # Criar os botoes
-        start_button = StartButton(self.window, text="Start", width=200)
-        self.v_box.add(start_button)
-        quit_button = QuitButton(text="Sair", width=200)
-        self.v_box.add(quit_button)
+        start_button = StartButton(self.window, text="Start", width=200, style=btn_style)
+        self.v_box.add(start_button.with_space_around(bottom=20))
+        quit_button = QuitButton(text="Sair", width=200, style=btn_style)
+        self.v_box.add(quit_button.with_space_around(bottom=20))
 
 
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="center_x",
-                anchor_y="center_y",
+                anchor_y="bottom",
+                align_y=32,
                 child=self.v_box)
         )
 
@@ -350,7 +368,7 @@ class Game(arcade.View):
                 self.tile_map.tile_height * TILE_SCALING * PLAYER_START_Y
             )
             # toca som de dano
-            arcade.play_sound(HIT_SOUND)
+            arcade.play_sound(HIT_SOUND, SOUND_VOL)
 
         # Posiciona a camera
         self.camera.center_on_sprite(self.player_sprite)
@@ -394,8 +412,7 @@ class Game(arcade.View):
             else:
                 collectable.collision()
                 self.score += collectable.value
-            arcade.play_sound(COIN_SOUND, volume=0.5)
-
+            arcade.play_sound(COIN_SOUND, SOUND_VOL)
 
         # Checa se o jogador chegou a uma porta
         door_collision = arcade.check_for_collision_with_list(
@@ -418,7 +435,7 @@ class Game(arcade.View):
         if self.player_sprite.health <= 0:
             # Troca para a tela de Game Over
             self.new_game = True
-            arcade.play_sound(GAME_OVER)
+            arcade.play_sound(GAME_OVER, SOUND_VOL)
             gameOver_view = GameOver()
             self.window.show_view(gameOver_view)
 

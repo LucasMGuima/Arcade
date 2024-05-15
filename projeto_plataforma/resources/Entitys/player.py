@@ -71,13 +71,13 @@ class Player(entity.Entity):
                     self.change_y = self.jump_speed * 0.75
                     if not collision.spike_head:
                         collision.take_damage(1)
-                        arcade.play_sound(self.sound_hit, volume=0.5)
+                        arcade.play_sound(self.sound_hit, volume=0.05)
                     else:
                         self.health -= 1
-                        arcade.play_sound(self.sound_hurt, volume=0.5)
+                        arcade.play_sound(self.sound_hurt, volume=0.05)
                 elif self.can_take_damge:
                     self.health -= 1
-                    arcade.play_sound(self.sound_hurt, volume=0.5)
+                    arcade.play_sound(self.sound_hurt, volume=0.05)
                     self.can_take_damge = False
 
 
@@ -87,7 +87,7 @@ class Player(entity.Entity):
 
                 if self.change_y < 0 and self.can_take_damge:
                     self.health -= 1
-                    arcade.play_sound(self.sound_hurt, volume=0.5)
+                    arcade.play_sound(self.sound_hurt, volume=0.05)
                     self.can_take_damge = False
                 else:
                     self.can_take_damge = True
@@ -109,7 +109,7 @@ class Player(entity.Entity):
                 self.change_y = self.speed
             elif(can_jump and not self.jump_needs_reset):
                 self.change_y = self.jump_speed
-                arcade.play_sound(self.sound_jump, volume=0.5)
+                arcade.play_sound(self.sound_jump, volume=0.05)
                 self.jump_needs_reset = True
         elif self.down_pressed and not self.up_pressed:
             if on_ladder:
