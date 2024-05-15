@@ -123,6 +123,48 @@ class MainMenu(arcade.View):
 
         self.manager.draw()
 
+class GameEnd(arcade.View):
+    def on_show_view(self):
+        arcade.set_background_color(arcade.color.ASH_GREY)
+
+    def on_draw(self):
+        self.clear()
+
+        arcade.draw_text(
+            "Game Over",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT-32,
+            arcade.color.BLACK,
+            font_name="8-bit Arcade In",
+            font_size=48,
+            anchor_x="center",
+            anchor_y="top"
+        )
+    
+        arcade.draw_text(
+            "Thank you for playing",
+            SCREEN_WIDTH/2,
+            SCREEN_HEIGHT/2,
+            arcade.color.BLACK,
+            font_name="8-bit Arcade In",
+            font_size=32,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            "- Click to play again -",
+            SCREEN_WIDTH/2,
+            (SCREEN_HEIGHT/2)-23,
+            arcade.color.BLACK,
+            font_name="8-bit Arcade In",
+            font_size=32,
+            anchor_x="center"
+        )
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        game_view = Game()
+        self.window.show_view(game_view)
+
 class GameOver(arcade.View):
     def on_show_view(self):
         arcade.set_background_color(arcade.color.RED_BROWN)
@@ -151,7 +193,7 @@ class GameOver(arcade.View):
         )
 
         arcade.draw_text(
-            "- Click to play -",
+            "- Click to try again -",
             SCREEN_WIDTH/2,
             (SCREEN_HEIGHT/2)-34,
             arcade.color.BLACK,
@@ -506,8 +548,8 @@ class Game(arcade.View):
 
     def on_key_press(self, key: int, modifiers: int):
         
-        if key == arcade.key.R:
-            self.setup()
+        """if key == arcade.key.R:
+            self.setup()"""
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.up_pressed = True
